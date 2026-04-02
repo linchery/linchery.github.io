@@ -12,6 +12,7 @@ const SITE_CONFIG = {
     { key: "research", href: "research.html", label: "RESEARCH" },
     { key: "publication", href: "publication.html", label: "PUBLICATION" },
     { key: "special", href: "special.html", label: "SPECIAL" },
+    { key: "gallery", href: "gallery.html", label: "GALLERY" },
   ],
   socialLinks: [
     {
@@ -56,6 +57,7 @@ const PAGE_TITLE_DECORATIONS = {
   research: "title_deco_blue",
   publication: "title_deco_pink",
   special: "title_deco_green",
+  gallery: "title_deco_blue",
 };
 
 function renderSocialIcon(link) {
