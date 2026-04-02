@@ -149,10 +149,16 @@ function renderFooter(pageKey) {
       <div class="fc_support">
         <h3>MENU</h3>
         <ul class="support_navi">${nav}</ul>
-        <h3>Address</h3>
-        <p>${SITE_CONFIG.footer.address}</p>
-        <h3>Email</h3>
-        <p>${SITE_CONFIG.footer.email}</p>
+        <div class="footer-contact-grid">
+          <section class="footer-contact-block">
+            <h3>Address</h3>
+            <p>${SITE_CONFIG.footer.address}</p>
+          </section>
+          <section class="footer-contact-block">
+            <h3>Email</h3>
+            <p>${SITE_CONFIG.footer.email}</p>
+          </section>
+        </div>
       </div>
     </footer>
   `;

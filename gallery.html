@@ -3,6 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <link rel="shortcut icon" type="image/x-icon" href="assets/img/Capybarasan.ico">
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="stylesheet" href="assets/css/menu.css"/>
+  <script defer src="assets/js/site.js"></script>
   <title>3D Photo Gallery</title>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Amiri&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@300;400;500&display=swap");
@@ -73,213 +77,6 @@
       box-shadow: 0 14px 28px rgba(0, 0, 0, 0.07);
       border: 1px solid rgba(0, 0, 0, 0.06);
       backdrop-filter: blur(8px);
-    }
-
-    .hamburger-menu {
-      position: fixed;
-      inset: 0;
-      z-index: 20;
-      pointer-events: none;
-    }
-
-    .hamburger-menu > * {
-      pointer-events: auto;
-    }
-
-    .menu-btn {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      z-index: 22;
-      width: 64px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: background-color 0.35s ease, transform 0.35s ease;
-    }
-
-    .menu-btn span,
-    .menu-btn span::before,
-    .menu-btn span::after {
-      content: "";
-      display: block;
-      width: 28px;
-      height: 2px;
-      border-radius: 999px;
-      background-color: rgb(95, 95, 95);
-      position: absolute;
-      transition: transform 0.4s ease, opacity 0.3s ease, background-color 0.35s ease, top 0.4s ease, bottom 0.4s ease;
-    }
-
-    .menu-btn span::before {
-      bottom: 8px;
-    }
-
-    .menu-btn span::after {
-      top: 8px;
-    }
-
-    #menu-btn-check {
-      display: none;
-    }
-
-    #menu-btn-check:checked ~ .menu-btn {
-      background-color: rgba(255, 255, 255, 0.08);
-    }
-
-    #menu-btn-check:checked ~ .menu-btn span {
-      background-color: rgba(255, 255, 255, 0);
-    }
-
-    #menu-btn-check:checked ~ .menu-btn span::before {
-      bottom: 0;
-      background-color: rgb(95, 95, 95);
-      transform: rotate(32deg) scaleX(0.95);
-    }
-
-    #menu-btn-check:checked ~ .menu-btn span::after {
-      top: 0;
-      background-color: rgb(95, 95, 95);
-      transform: rotate(-32deg) scaleX(0.95);
-    }
-
-    .menu-content {
-      position: absolute;
-      inset: 0;
-      z-index: 21;
-      width: 100%;
-      height: 100%;
-      background:
-        linear-gradient(180deg, rgba(235, 245, 250, 0.97) 0%, rgba(227, 240, 247, 0.95) 52%, rgba(220, 235, 244, 0.96) 100%);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      transition: opacity 0.45s ease, visibility 0.45s ease;
-      padding: 3rem;
-    }
-
-    #menu-btn-check:checked ~ .menu-content {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-    }
-
-    .menu-panel {
-      width: min(980px, 100%);
-      min-height: 100%;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: stretch;
-      gap: 3rem;
-    }
-
-    .menu-heading {
-      margin: 0 0 2.25rem;
-      font-family: "Amiri", serif;
-      font-size: clamp(2.5rem, 4vw, 4.2rem);
-      line-height: 1;
-      letter-spacing: 0.16em;
-      color: rgba(118, 142, 156, 0.28);
-      text-align: center;
-    }
-
-    .links {
-      width: 100%;
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      column-gap: 2.2rem;
-      row-gap: 1.8rem;
-      align-items: end;
-    }
-
-    .links li {
-      border-bottom: 1px solid rgba(112, 100, 90, 0.18);
-      min-width: 0;
-    }
-
-    .links li a {
-      display: block;
-      width: 100%;
-      padding: 0 0 0.7rem;
-      color: #2f2b28;
-      font-family: "Noto Serif JP", serif;
-      text-decoration: none;
-      letter-spacing: 0.12em;
-      font-size: clamp(1.05rem, 1.3vw, 1.4rem);
-      opacity: 0;
-      transform: translateY(14px);
-      transition: opacity 0.45s ease, transform 0.45s ease, color 0.25s ease;
-    }
-
-    #menu-btn-check:checked ~ .menu-content .links a {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    #menu-btn-check:checked ~ .menu-content .links li:nth-child(1) a { transition-delay: 0.05s; }
-    #menu-btn-check:checked ~ .menu-content .links li:nth-child(2) a { transition-delay: 0.1s; }
-    #menu-btn-check:checked ~ .menu-content .links li:nth-child(3) a { transition-delay: 0.15s; }
-    #menu-btn-check:checked ~ .menu-content .links li:nth-child(4) a { transition-delay: 0.2s; }
-
-    .menu-footer {
-      padding-top: 0;
-    }
-
-    .share_icon.menu-share {
-      margin-top: 0;
-      text-align: center;
-      padding-left: 0;
-    }
-
-    .menu-share li {
-      width: 1.6em;
-      display: inline-block;
-      vertical-align: top;
-      margin: 0 2rem 0 0;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.45s ease, transform 0.45s ease;
-    }
-
-    .menu-share li:last-child {
-      margin-right: 0;
-    }
-
-    .menu-share li img {
-      display: block;
-      width: 100%;
-      height: auto;
-      opacity: 1;
-    }
-
-    .menu-share li a {
-      display: block;
-      width: 100%;
-      padding: 0;
-      opacity: 1;
-      transform: none;
-    }
-
-    #menu-btn-check:checked ~ .menu-content .menu-share li {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    #menu-btn-check:checked ~ .menu-content .menu-share li:nth-child(1) { transition-delay: 0.24s; }
-    #menu-btn-check:checked ~ .menu-content .menu-share li:nth-child(2) { transition-delay: 0.28s; }
-    #menu-btn-check:checked ~ .menu-content .menu-share li:nth-child(3) { transition-delay: 0.32s; }
-    #menu-btn-check:checked ~ .menu-content .menu-share li:nth-child(4) { transition-delay: 0.36s; }
-    #menu-btn-check:checked ~ .menu-content .menu-share li:nth-child(5) { transition-delay: 0.4s; }
-    
-    .menu-content ul li {
-      list-style: none;
     }
 
     #overlay {
@@ -380,37 +177,6 @@
         white-space: normal;
       }
 
-      .menu-btn {
-        top: 12px;
-        right: 12px;
-        height: 58px;
-        width: 58px;
-      }
-
-      .menu-content {
-        padding: 3.75rem 1.5rem 2rem;
-      }
-
-      .menu-panel {
-        gap: 2.25rem;
-      }
-
-      .menu-heading {
-        margin-bottom: 1.75rem;
-        font-size: 2.4rem;
-      }
-
-      .links {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        column-gap: 1.25rem;
-        row-gap: 1.25rem;
-      }
-
-      .links li a {
-        font-size: 1.1rem;
-        letter-spacing: 0.12em;
-      }
-
       #status {
         left: 12px;
         bottom: 12px;
@@ -425,40 +191,14 @@
       .overlay-meta-line {
         font-size: 15px;
       }
+
     }
   </style>
 </head>
-<body>
+<body data-page="gallery" data-page-title="Gallery">
+  <div data-site-menu></div>
   <div id="hud">WASD / 矢印キー で移動 ｜ マウスドラッグ で視点回転 ｜ 写真をクリックで詳細</div>
   <div id="status">Initializing gallery...</div>
-
-  <div class="hamburger-menu">
-    <input type="checkbox" id="menu-btn-check" />
-    <label for="menu-btn-check" class="menu-btn"><span></span></label>
-    <div class="menu-content">
-      <div class="menu-panel">
-        <div class="menu-main">
-          <h2 class="menu-heading">MENU</h2>
-          <ul class="links">
-            <li><a href="index.html">HOME</a></li>
-            <li><a href="research.html">RESEARCH</a></li>
-            <li><a href="publication.html">PUBLICATION</a></li>
-            <li><a href="special.html">SPECIAL</a></li>
-            <li><a href="gallery.html" class="is-current">GALLERY</a></li>
-          </ul>
-        </div>
-        <div class="menu-footer">
-          <ul class="share_icon menu-share">
-            <li><a href="https://x.com/linda_uclab" target="_blank" rel="noreferrer" aria-label="X"><img src="./assets/img/icon_X.svg" alt="X" /></a></li>
-            <li><a href="https://www.instagram.com/linchery" target="_blank" rel="noreferrer" aria-label="Instagram"><img src="./assets/img/icon_instagram.svg" alt="Instagram" /></a></li>
-            <li><a href="https://m.facebook.com/linchery.nh" target="_blank" rel="noreferrer" aria-label="Facebook"><img src="./assets/img/icon_facebook.svg" alt="Facebook" /></a></li>
-            <li><a href="https://youtube.com/@linchery" target="_blank" rel="noreferrer" aria-label="YouTube"><img src="./assets/img/icon_youtube.svg" alt="YouTube" /></a></li>
-            <li><a href="https://github.com/linchery/" target="_blank" rel="noreferrer" aria-label="GitHub"><img src="./assets/img/icon_github.svg" alt="GitHub" /></a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <canvas id="c"></canvas>
 
@@ -1133,3 +873,52 @@
   </script>
 </body>
 </html>
+    .menu-footer {
+      padding-top: 0;
+    }
+
+    .share_icon.menu-share {
+      margin-top: 0;
+      text-align: center;
+      padding-left: 0;
+    }
+
+    .menu-share li {
+      width: 1.6em;
+      display: inline-block;
+      vertical-align: top;
+      margin: 0 2rem 0 0;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    .menu-share li:last-child {
+      margin-right: 0;
+    }
+
+    .menu-share li img {
+      display: block;
+      width: 100%;
+      height: auto;
+      opacity: 1;
+    }
+
+    .menu-share li a {
+      display: block;
+      width: 100%;
+      padding: 0;
+      opacity: 1;
+      transform: none;
+    }
+
+    #menu-btn-check:checked ~ .menu-content .menu-share li {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #menu-btn-check:checked ~ .menu-content .menu-share li:nth-child(1) { transition-delay: 0.24s; }
+    #menu-btn-check:checked ~ .menu-content .menu-share li:nth-child(2) { transition-delay: 0.28s; }
+    #menu-btn-check:checked ~ .menu-content .menu-share li:nth-child(3) { transition-delay: 0.32s; }
+    #menu-btn-check:checked ~ .menu-content .menu-share li:nth-child(4) { transition-delay: 0.36s; }
+    #menu-btn-check:checked ~ .menu-content .menu-share li:nth-child(5) { transition-delay: 0.4s; }
