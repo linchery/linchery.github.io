@@ -1,49 +1,63 @@
 /* Menu Buttons */
 .menu-btn {
     position: fixed;
-    top: 10px;
-    right: 10px;
+    top: 18px;
+    right: 18px;
     display: flex;
-    height: 60px;
-    width: 60px;
+    height: 64px;
+    width: 64px;
     justify-content: center;
     align-items: center;
-    z-index: 90;
-    background-color: #3583bb00;
-  }
-  .menu-btn span,
-  .menu-btn span:before,
-  .menu-btn span:after {
+    z-index: 110;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.35s ease, transform 0.35s ease;
+}
+
+.menu-btn span,
+.menu-btn span:before,
+.menu-btn span:after {
     content: '';
     display: block;
-    height: 3px;
-    width: 25px;
-    border-radius: 3px;
-    background-color: rgb(136, 136, 136);
+    height: 2px;
+    width: 28px;
+    border-radius: 999px;
+    background-color: rgb(95, 95, 95);
     position: absolute;
-  }
-  .menu-btn span:before {
-    bottom: 8px;
-  }
-  .menu-btn span:after {
-    top: 8px;
-  }
-  
-  #menu-btn-check:checked ~ .menu-btn span {
-    background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/
-  }
-  #menu-btn-check:checked ~ .menu-btn span::before {
+    transition: transform 0.4s ease, opacity 0.3s ease, background-color 0.35s ease, top 0.4s ease, bottom 0.4s ease;
+}
+
+.menu-btn span:before {
+    bottom: 9px;
+}
+
+.menu-btn span:after {
+    top: 9px;
+}
+
+#menu-btn-check:checked ~ .menu-btn {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+#menu-btn-check:checked ~ .menu-btn span {
+    background-color: rgba(255, 255, 255, 0);
+}
+
+#menu-btn-check:checked ~ .menu-btn span::before {
     bottom: 0;
-    transform: rotate(45deg);
-  }
-  #menu-btn-check:checked ~ .menu-btn span::after {
+    background-color: rgb(95, 95, 95);
+    transform: rotate(32deg) scaleX(0.95);
+}
+
+#menu-btn-check:checked ~ .menu-btn span::after {
     top: 0;
-    transform: rotate(-45deg);
-  }
-  
-  #menu-btn-check {
+    background-color: rgb(95, 95, 95);
+    transform: rotate(-32deg) scaleX(0.95);
+}
+
+#menu-btn-check {
     display: none;
-  }
+}
 
 
 /* Menu Contents */
@@ -52,69 +66,202 @@
     height: 100%;
     position: fixed;
     top: 0;
-    left: 100%;
-    z-index: 80;
-    background-color: #bb713559;
-    transition: all 0.5s;
-    padding:60px 5%;
-    max-width: auto;
-}
-.menu-content h3 {
-    font-family: 'Amiri', sans-serif;
-    font-size:2em;
-    letter-spacing:.2em;
-    font-weight:400;
-    line-height: 0.1;
+    left: 0;
+    z-index: 100;
+    background:
+        linear-gradient(180deg, rgba(235, 245, 250, 0.97) 0%, rgba(227, 240, 247, 0.95) 52%, rgba(220, 235, 244, 0.96) 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.45s ease, visibility 0.45s ease;
+    padding: 3rem;
 }
 
-.menu-content .icons ul {
-    padding: 70px 10px 0;
+.menu-panel {
+    width: min(980px, 100%);
+    min-height: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    gap: 3rem;
 }
+
+.menu-main {
+    padding-top: 0;
+}
+
+.menu-heading {
+    margin: 0 0 2.25rem;
+    font-family: 'Amiri', serif;
+    font-size: clamp(2.5rem, 4vw, 4.2rem);
+    line-height: 1;
+    letter-spacing: 0.16em;
+    color: rgba(118, 142, 156, 0.28);
+    text-align: center;
+}
+
+.menu-footer {
+    padding-top: 0;
+}
+
 .menu-content ul li {
     list-style: none;
 }
-.menu-content ul li a {
+
+.links li a {
     display: block;
     width: 100%;
-    font-size: 15px;
+    font-size: clamp(1.05rem, 1.3vw, 1.4rem);
     box-sizing: border-box;
-    color:#ffffff;
+    color: #2f2b28;
     text-decoration: none;
-    padding: 9px 15px 10px 0;
+    padding: 0 0 0.7rem;
     position: relative;
+    letter-spacing: 0.12em;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.45s ease, transform 0.45s ease, color 0.25s ease;
 }
 
-.links li{
-  border-bottom: solid 1px #ffffff;
+.links li a.is-current {
+    font-weight: 700;
+    opacity: 1;
 }
 
-/* .menu-content ul li a{
-    content: "";
-    width: 7px;
-    height: 7px;
-    border-top: solid 2px #ffffff;
-    border-right: solid 2px #ffffff;
-    transform: rotate(45deg);
-    position: absolute;
-    right: 11px;
-    top: 16px;
-} */
+.links {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: 2.2rem;
+    row-gap: 1.8rem;
+    align-items: end;
+}
 
-.icons {
-  margin-top:2.5em;
-  text-align:center;
-  padding-left:.2em;
+.links li {
+    border-bottom: 1px solid rgba(112, 100, 90, 0.18);
+    min-width: 0;
 }
-.icons li {
-  width:2.5em;
-  display:inline-block;
-  vertical-align:top;
-  margin:0 2em 0 0;
+
+.menu-share {
+    margin-top: 0;
+    text-align: center;
+    padding-left: 0;
 }
-.icons li svg {
-  fill:rgb(255, 255, 255);
+
+.menu-share li {
+    width: 1.6em;
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 2rem 0 0;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.menu-share li:last-child {
+    margin-right: 0;
+}
+
+.menu-share li img {
+    display: block;
+    width: 100%;
+    height: auto;
+    opacity: 1;
+}
+
+.menu-share li a {
+    display: block;
+    width: 100%;
+    padding: 0;
+    opacity: 1;
+    transform: none;
 }
 
 #menu-btn-check:checked ~ .menu-content {
-    left: 0;/*メニューを画面内へ*/
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+#menu-btn-check:checked ~ .menu-content .links a,
+#menu-btn-check:checked ~ .menu-content .menu-share li {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#menu-btn-check:checked ~ .menu-content .links li:nth-child(1) a {
+    transition-delay: 0.05s;
+}
+
+#menu-btn-check:checked ~ .menu-content .links li:nth-child(2) a {
+    transition-delay: 0.1s;
+}
+
+#menu-btn-check:checked ~ .menu-content .links li:nth-child(3) a {
+    transition-delay: 0.15s;
+}
+
+#menu-btn-check:checked ~ .menu-content .links li:nth-child(4) a {
+    transition-delay: 0.2s;
+}
+
+#menu-btn-check:checked ~ .menu-content .menu-share li:nth-child(1) {
+    transition-delay: 0.24s;
+}
+
+#menu-btn-check:checked ~ .menu-content .menu-share li:nth-child(2) {
+    transition-delay: 0.28s;
+}
+
+#menu-btn-check:checked ~ .menu-content .menu-share li:nth-child(3) {
+    transition-delay: 0.32s;
+}
+
+#menu-btn-check:checked ~ .menu-content .menu-share li:nth-child(4) {
+    transition-delay: 0.36s;
+}
+
+#menu-btn-check:checked ~ .menu-content .menu-share li:nth-child(5) {
+    transition-delay: 0.4s;
+}
+
+@media screen and (max-width: 767px) {
+    .menu-btn {
+        top: 12px;
+        right: 12px;
+        height: 58px;
+        width: 58px;
+    }
+
+    .menu-content {
+        padding: 3.75rem 1.5rem 2rem;
+    }
+
+    .menu-panel {
+        gap: 2.25rem;
+    }
+
+    .menu-heading {
+        margin-bottom: 1.75rem;
+        font-size: 2.4rem;
+    }
+
+    .links li a {
+        font-size: 1.1rem;
+        letter-spacing: 0.12em;
+    }
+
+    .links {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 1.25rem;
+        row-gap: 1.25rem;
+    }
+
+    .menu-footer {
+        padding-top: 1.5rem;
+    }
 }

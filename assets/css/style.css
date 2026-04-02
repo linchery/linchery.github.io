@@ -132,6 +132,12 @@ body {
   fill:#333;
 }
 
+.share_icon li img {
+  display:block;
+  width:100%;
+  height:auto;
+}
+
 .footer {
   padding:0 5%;
 }
@@ -164,6 +170,9 @@ body {
   font-weight:300;
   text-align: center;
   color:#333;
+}
+.support_navi li a.is-current {
+  font-weight:600;
 }
 .support_navi li a:before {
   content:"\f3d3";
