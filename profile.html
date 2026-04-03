@@ -1,0 +1,219 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <link rel="shortcut icon" type="image/x-icon" href="assets/img/Capybarasan.ico">
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="stylesheet" href="assets/css/top.css"/>
+  <link rel="stylesheet" href="assets/css/menu.css"/>
+  <style>
+    .profile-visual-area {
+      padding-top: 1.5em;
+      padding-bottom: 3em;
+      border-bottom: 0;
+    }
+
+    .profile-visual-area .profile-visual {
+      grid-column: 1 / -1;
+    }
+
+    .profile-visual {
+      max-width: 420px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .profile-visual-frame {
+      border: 1px solid #b8dff0;
+      background: #faf8f4;
+      padding: 0;
+    }
+
+    .profile-visual-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+      pointer-events: auto;
+    }
+
+    .profile-visual-name {
+      margin-top: 1.2em;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.35em;
+      letter-spacing: .08em;
+      color: #333;
+    }
+
+    .selected-activities .item ul {
+      list-style: disc;
+      padding-left: 1.25em;
+    }
+
+    .research-interests .item ul {
+      list-style: disc;
+      padding-left: 1.25em;
+    }
+
+    .research-interests .item li,
+    .selected-activities .item li {
+      list-style: disc;
+      margin-bottom: 1em;
+    }
+
+    .selected-activities .item li p {
+      margin-top: 0.25em;
+    }
+
+    @media screen and (min-width:768px) {
+      .profile-visual-area {
+        padding-top: 2em;
+        padding-bottom: 4em;
+      }
+    }
+  </style>
+  <script defer src="assets/js/site.js"></script>
+  <script defer src="assets/js/top.js"></script>
+</head>
+
+<body class="is-preload" data-page="profile" data-page-title="Profile">
+<div data-site-menu></div>
+<div data-site-header></div>
+
+<div id="wrap">
+  <main class="main">
+    <article class="contents">
+
+      <section class="area profile-visual-area">
+        <div class="profile-visual">
+          <div class="profile-visual-frame">
+            <img src="assets/img/prof_img.webp" alt="Nozomi Hayashida profile photo" />
+          </div>
+          <p class="profile-visual-name">Nozomi Hayashida</p>
+        </div>
+      </section>
+
+      <section class="area biography">
+        <div class="midashi">
+            <h2 class="on"><span>Biography</span></h2>
+        </div>
+        <div class="item">
+          <p>
+            1996年兵庫県生まれ．2020年3月大阪府立大学工学域卒業．2022年3月名古屋大学大学院工学研究科修士課程修了．修士課程在学中に<a href="https://www.tmi.mirai.nagoya-u.ac.jp/" target="_blank" rel="noreferrer">卓越大学院プログラムTMI</a>（Transdisciplinary Mobility Innovation）1期生として参加．2022年4月より名古屋大学大学院工学研究科情報・通信工学専攻博士後期課程に在籍．
+          </p>
+          <p>
+            2022年8月にXR・映像表現を軸とした制作・研究開発を行う<a href="https://realidad.co.jp/" target="_blank" rel="noreferrer">Realidad株式会社</a>を設立．専門は拡張現実（VR/AR/MR）およびヒューマンコンピュータインタラクション（HCI）．<a href="https://internet-of-realities.org/" target="_blank" rel="noreferrer">JST CREST「[Internet of Realities]」</a>メンバー．
+          </p>
+          <p>
+            テレプレゼンスや多拠点コミュニケーションにおける「距離」の知覚とその再構成に関心を持ち，XR技術を用いた空間的な共有体験の設計に取り組んでいる．
+          </p>
+        </div>
+      </section>
+
+      <section class="area education">
+        <div class="midashi">
+            <h2 class="on"><span>Education</span></h2>
+        </div>
+        <div class="item">
+          <dl>
+            <dt>2022.4 - 現在</dt>
+            <dd>
+              <p>名古屋大学大学院 工学研究科 情報・通信工学専攻
+                <a href="http://www.ucl.nuee.nagoya-u.ac.jp/">河口研究室</a><br>
+                <b>博士後期課程</b>
+              </p>
+            </dd>
+
+            <dt>2020.4 - 2022.3</dt>
+            <dd>
+              <p>名古屋大学大学院 工学研究科 情報・通信工学専攻
+                <a href="http://www.ucl.nuee.nagoya-u.ac.jp/">河口研究室</a><br>
+                <b>修士課程</b>
+              </p>
+            </dd>
+
+            <dt>2016.4 - 2020.3</dt>
+            <dd>
+              <p>大阪府立大学 工学域 電気電子系学類 情報工学課程
+                <a>勝間研究室</a><br>
+                <b>学士課程</b>
+              </p>
+            </dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="area research-interests">
+        <div class="midashi">
+            <h2 class="on"><span>Research Interests</span></h2>
+        </div>
+        <div class="item">
+          <ul>
+            <li>Multi-site Telepresence and Group Communication</li>
+            <li>XR-based Experience and Media Design</li>
+            <li>Human-Computer Interaction (HCI)</li>
+            <li>Subjective Perception and Reconstruction of Distance</li>
+            <li>Design of Shared Reality and Reality Landscapes</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="area selected-activities">
+        <div class="midashi">
+            <h2 class="on"><span>Skills / Tools</span></h2>
+        </div>
+        <div class="item">
+          <ul>
+            <li>
+              <b>Development</b>
+              <p>Unity (C#), Python, WebRTC, OpenCV, MediaPipe</p>
+            </li>
+            <li>
+              <b>XR / Media</b>
+              <p>360° Video, Virtual Production, XR Experience Design</p>
+            </li>
+            <li>
+              <b>Creative Tools</b>
+              <p>Adobe Premiere Pro, After Effects, Illustrator, Photoshop</p>
+            </li>
+            <li>
+              <b>Research</b>
+              <p>User Study Design, Experimental Design, Data Analysis</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- <section class="area realidad">
+        <div class="midashi">
+            <h2 class="on"><span>Realidad (XR / Media Practice)</span></h2>
+        </div>
+        <div class="item">
+          <p>
+            ここに会社・プロジェクトの紹介文を記入します。XR / Media Practice としての活動内容や、
+            事業・制作・研究との関係を簡潔に書けます。
+          </p>
+          <p class="home-linkline"><a href="#">会社ページへのリンクをここに設定</a></p>
+        </div>
+      </section>
+
+      <section class="area personal">
+        <div class="midashi">
+            <h2 class="on"><span>Personal</span></h2>
+        </div>
+        <div class="item">
+          <p>
+            ここに個人的な関心、趣味、価値観、日常的な活動などを書きます。
+            研究以外の側面をやわらかく伝えるためのセクションです。
+          </p>
+        </div>
+      </section> -->
+    </article>
+  </main>
+
+  <div data-site-social></div>
+  <div data-site-footer></div>
+</div>
+</body>
+
+</html>

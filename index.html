@@ -7,6 +7,16 @@
   <link rel="stylesheet" href="assets/css/style.css"/>
   <link rel="stylesheet" href="assets/css/top.css"/>
   <link rel="stylesheet" href="assets/css/menu.css"/>
+  <style>
+    .home-news .midashi,
+    .home-news .midashi h2,
+    .home-research .midashi,
+    .home-research .midashi h2,
+    .home-publications .midashi,
+    .home-publications .midashi h2 {
+      text-align: left;
+    }
+  </style>
   <script defer src="assets/js/site.js"></script>
   <script defer src="assets/js/top.js"></script>
 </head>
@@ -15,64 +25,84 @@
 <div data-site-menu></div>
 <div data-site-header></div>
 
-<!-- Wrapper -->
 <div id="wrap">
-  <!-- Main -->
   <main class="main">
     <article class="contents">
 
-      <!-- Biography -->
-      <section class="area biography">
+      <section class="area home-news">
         <div class="midashi">
-            <h2 class="on"><span>Biography</span></h2>
+          <h2 class="on"><span>News</span></h2>
         </div>
         <div class="item">
-          <p>
-            1996年兵庫県生まれ．2020年3月大阪府立大学工学域卒業. 
-            2022年3月名古屋大学大学院工学研究科修士課程修了．
-            修士課程在学中に卓越大学院プログラムTMI1期生として参加．
-            2022年4月より名古屋大学大学院工学研究科情報・通信工学後期博士後期課程に所属．
-            専門は拡張現実(VR/AR/MR), ヒューマンコンピュータインタラクション(HCI).
-          </p>
+          <div class="news-list">
+            <article class="news-entry">
+              <p class="news-date">2025.06</p>
+              <div class="news-body">
+                <span class="news-badge badge-paper">Paper</span>
+                <p>情報処理学会論文誌に「Moving Pursuits：MR空間における視線を用いた遮蔽オブジェクトの選択手法」が採択されました。</p>
+              </div>
+            </article>
+
+            <article class="news-entry">
+              <p class="news-date">2024.09</p>
+              <div class="news-body">
+                <span class="news-badge badge-talk">Talk</span>
+                <p>UbiComp2024 Doctoral Colloquium にて「Enhancing Group Telepresence Interaction through Seamless Inverse Panorama Projection on Spherical Display」を発表しました。</p>
+              </div>
+            </article>
+
+            <article class="news-entry">
+              <p class="news-date">2022.07</p>
+              <div class="news-body">
+                <span class="news-badge badge-award">Award</span>
+                <p>DICOMO 2022 にて野口賞を受賞しました。</p>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
 
-      <!-- Education -->
-      <section class="area education">
+      <section class="area home-research">
         <div class="midashi">
-            <h2 class="on"><span>Education</span></h2>
+          <h2 class="on"><span>Research</span></h2>
         </div>
         <div class="item">
-          <dl>
-            <dt>2022.4 - 現在</dt>
-            <dd>
-              <p>名古屋大学大学院 工学研究科 情報・通信工学専攻
-                <a href="http://www.ucl.nuee.nagoya-u.ac.jp/">河口研究室</a><br>
-                <b>博士後期課程</b>
-              </p>
-            </dd>
+          <div class="home-summary-card">
+            <p>
+              Mixed Reality、テレプレゼンス、異空間コミュニケーションを主なテーマとして、
+              人と人の距離感や存在感を拡張するインタフェース設計に取り組んでいます。
+              視線入力、モビリティ、球体ディスプレイなどを通して、
+              直感的で豊かなXR体験の実現を目指しています。
+            </p>
+          </div>
+          <p class="home-linkline"><a href="research.html">READ MORE ABOUT MY RESEARCH →</a></p>
+        </div>
+      </section>
 
-            <dt>2020.4 - 2022.3</dt>
-            <dd>
-              <p>名古屋大学大学院 工学研究科 情報・通信工学専攻
-                <a href="http://www.ucl.nuee.nagoya-u.ac.jp/">河口研究室</a><br>
-                <b>修士課程</b>
-            </dd>
-
-            <dt>2016.4 - 2020.3</dt>
-            <dd>
-              <p>大阪府立大学 工学域 電気電子系学類 情報工学課程
-                <a>勝間研究室</a>
-                <br>
-                <b>学士課程</b>
-              </p>
-            </dd>
-          </dl>
+      <section class="area home-publications">
+        <div class="midashi">
+          <h2 class="on"><span>Publications</span></h2>
+        </div>
+        <div class="item">
+          <div class="publication-picks">
+            <article class="publication-pick">
+              <p class="publication-meta">情報処理学会論文誌, 2025</p>
+              <p>Moving Pursuits：MR空間における視線を用いた遮蔽オブジェクトの選択手法</p>
+            </article>
+            <article class="publication-pick">
+              <p class="publication-meta">UbiComp 2024 Doctoral Colloquium, 2024</p>
+              <p>Enhancing Group Telepresence Interaction through Seamless Inverse Panorama Projection on Spherical Display</p>
+            </article>
+            <article class="publication-pick">
+              <p class="publication-meta">HCI International 2023 Poster, 2023</p>
+              <p>Mobility Link XR: Interspace Interaction System in Electric Wheelchair</p>
+            </article>
+          </div>
+          <p class="home-linkline"><a href="publication.html">VIEW ALL PUBLICATIONS →</a></p>
         </div>
       </section>
     </article>
   </main>
-      
 
   <div data-site-social></div>
   <div data-site-footer></div>

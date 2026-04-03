@@ -9,6 +9,7 @@ const SITE_CONFIG = {
   },
   navItems: [
     { key: "home", href: "index.html", label: "HOME" },
+    { key: "profile", href: "profile.html", label: "PROFILE" },
     { key: "research", href: "research.html", label: "RESEARCH" },
     { key: "publication", href: "publication.html", label: "PUBLICATION" },
     { key: "special", href: "special.html", label: "SPECIAL" },
@@ -54,6 +55,7 @@ const SITE_CONFIG = {
 };
 
 const PAGE_TITLE_DECORATIONS = {
+  profile: "title_deco_green",
   research: "title_deco_blue",
   publication: "title_deco_pink",
   special: "title_deco_green",
