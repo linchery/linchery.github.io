@@ -79,6 +79,47 @@
       backdrop-filter: blur(8px);
     }
 
+    #joystick {
+      position: absolute;
+      left: 16px;
+      bottom: 76px;
+      z-index: 12;
+      width: 118px;
+      height: 118px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+      display: none;
+      touch-action: none;
+      backdrop-filter: blur(6px);
+    }
+
+    #joystick.is-visible {
+      display: block;
+    }
+
+    .joystick-ring {
+      position: absolute;
+      inset: 11px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .joystick-knob {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 42px;
+      height: 42px;
+      margin-left: -21px;
+      margin-top: -21px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.24);
+      transition: transform 0.08s ease;
+    }
+
     #overlay {
       position: absolute;
       inset: 0;
@@ -182,6 +223,20 @@
         bottom: 12px;
       }
 
+      #joystick {
+        left: 12px;
+        bottom: 68px;
+        width: 104px;
+        height: 104px;
+      }
+
+      .joystick-knob {
+        width: 38px;
+        height: 38px;
+        margin-left: -19px;
+        margin-top: -19px;
+      }
+
       .overlay-panel {
         width: 100%;
         max-height: 94vh;
@@ -199,6 +254,10 @@
   <div data-site-menu></div>
   <div id="hud">WASD / 矢印キー で移動 ｜ マウスドラッグ で視点回転 ｜ 写真をクリックで詳細</div>
   <div id="status">Initializing gallery...</div>
+  <div id="joystick" aria-hidden="true">
+    <div class="joystick-ring"></div>
+    <div class="joystick-knob" id="joystickKnob"></div>
+  </div>
 
   <canvas id="c"></canvas>
 
@@ -386,6 +445,8 @@
     const canvas = document.getElementById("c");
     const statusEl = document.getElementById("status");
     const overlayEl = document.getElementById("overlay");
+    const joystickEl = document.getElementById("joystick");
+    const joystickKnobEl = document.getElementById("joystickKnob");
     const overlayImageEl = document.getElementById("overlayImage");
     const overlayTitleEl = document.getElementById("overlayTitle");
     const overlayDescriptionEl = document.getElementById("overlayDescription");
@@ -421,6 +482,9 @@
     let pointerId = null;
     let lastX = 0;
     let lastY = 0;
+    let joystickPointerId = null;
+    let joystickX = 0;
+    let joystickY = 0;
 
     // ============================================================
     //  Textures
@@ -971,8 +1035,11 @@
     }
 
     function updateMovement() {
-      const moveForward = (keys.KeyW || keys.ArrowUp ? 1 : 0) - (keys.KeyS || keys.ArrowDown ? 1 : 0);
-      const moveStrafe = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0);
+      const keyForward = (keys.KeyW || keys.ArrowUp ? 1 : 0) - (keys.KeyS || keys.ArrowDown ? 1 : 0);
+      const keyStrafe = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0);
+      const joystickSensitivity = 0.55;
+      const moveForward = keyForward + (-joystickY * joystickSensitivity);
+      const moveStrafe = keyStrafe + (joystickX * joystickSensitivity);
       if (!moveForward && !moveStrafe) {
         return;
       }
@@ -989,6 +1056,71 @@
       camera.position.x = next.x;
       camera.position.z = next.z;
       camera.position.y = 1.9;
+    }
+
+    function updateJoystickKnob() {
+      const radius = 34;
+      joystickKnobEl.style.transform = `translate(${joystickX * radius}px, ${joystickY * radius}px)`;
+    }
+
+    function updateJoystickVisibility() {
+      const isTouchLike =
+        window.matchMedia("(pointer: coarse)").matches ||
+        navigator.maxTouchPoints > 0;
+      const isTabletOrPhoneWidth = window.innerWidth <= 1024;
+      joystickEl.classList.toggle("is-visible", isTouchLike && isTabletOrPhoneWidth);
+    }
+
+    function resetJoystick() {
+      joystickPointerId = null;
+      joystickX = 0;
+      joystickY = 0;
+      updateJoystickKnob();
+    }
+
+    function updateJoystickFromEvent(event) {
+      const rect = joystickEl.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      let dx = event.clientX - centerX;
+      let dy = event.clientY - centerY;
+      const maxDistance = rect.width * 0.34;
+      const distance = Math.hypot(dx, dy);
+      if (distance > maxDistance) {
+        const scale = maxDistance / distance;
+        dx *= scale;
+        dy *= scale;
+      }
+      joystickX = dx / maxDistance;
+      joystickY = dy / maxDistance;
+      updateJoystickKnob();
+    }
+
+    function onJoystickPointerDown(event) {
+      joystickPointerId = event.pointerId;
+      joystickEl.setPointerCapture(event.pointerId);
+      updateJoystickFromEvent(event);
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    function onJoystickPointerMove(event) {
+      if (event.pointerId !== joystickPointerId) {
+        return;
+      }
+      updateJoystickFromEvent(event);
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    function onJoystickPointerUp(event) {
+      if (event.pointerId !== joystickPointerId) {
+        return;
+      }
+      joystickEl.releasePointerCapture(event.pointerId);
+      resetJoystick();
+      event.preventDefault();
+      event.stopPropagation();
     }
 
     function onPointerDown(event) {
@@ -1079,9 +1211,12 @@
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight, false);
+      updateJoystickVisibility();
     }
 
     function bindEvents() {
+      updateJoystickVisibility();
+
       window.addEventListener("resize", onResize);
       window.addEventListener("keydown", (event) => {
         keys[event.code] = true;
@@ -1097,6 +1232,11 @@
       canvas.addEventListener("pointermove", onPointerMove);
       canvas.addEventListener("pointerup", onPointerUp);
       canvas.addEventListener("pointercancel", onPointerUp);
+
+      joystickEl.addEventListener("pointerdown", onJoystickPointerDown);
+      joystickEl.addEventListener("pointermove", onJoystickPointerMove);
+      joystickEl.addEventListener("pointerup", onJoystickPointerUp);
+      joystickEl.addEventListener("pointercancel", onJoystickPointerUp);
 
       overlayCloseEl.addEventListener("click", closeOverlay);
       overlayEl.addEventListener("click", (event) => {
