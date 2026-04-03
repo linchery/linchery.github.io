@@ -12,6 +12,22 @@
     .research .midashi h2 {
       text-align: left;
     }
+
+    .research-meta dd ul {
+      list-style: disc;
+      margin: 0;
+      padding-left: 1.25em;
+    }
+
+    .research-meta dd ul li {
+      list-style: disc;
+      margin: 0 0 0.45em 0;
+      padding-left: 0;
+    }
+
+    .research-meta dd {
+      padding-left: 1.2em;
+    }
   </style>
   <script defer src="assets/js/site.js"></script>
   <script defer src="assets/js/top.js"></script>
@@ -30,27 +46,42 @@
         </div>
         <div class="item">
           <section class="research-card">
-            <h3>ここに研究タイトルを記入</h3>
+            <h3>視線誘導による遮蔽オブジェクト選択手法</h3>
             <div class="research-visual">
-              <span>16:9 Image Area<br>研究テーマ1の画像や図をここに挿入</span>
+              <img src="assets/img/Research_Topic_01.jpg" alt="Research Topic 01" />
             </div>
             <p>
-              ここに研究テーマ1の概要を書きます。どのような課題に取り組んでいるのか、
-              背景や目的が伝わるように記述してください。
+              MR空間では、仮想ウィンドウなどの動的オブジェクトと現実世界の固定オブジェクトが重なり、ユーザの選択意図を正確に判断することが難しいという課題がある。特に遮蔽状態では、従来の視線操作では対象の特定が困難となる。本研究では、オブジェクトの動きと視線追跡を組み合わせた「Moving Pursuits」を提案し、視線による直感的かつハンズフリーな選択を実現する。動的オブジェクトを展開させることで視覚的干渉を解消し、視線の追従によって選択意図を推定することで、複雑なMR環境における選択精度と操作性の向上を目指す。
             </p>
 
             <dl class="research-meta">
               <dt>Keywords</dt>
-              <dd>キーワード1 / キーワード2 / キーワード3</dd>
+              <dd>Mixed Reality / 視線追跡 / オブジェクト選択</dd>
 
               <dt>Methods / Technologies</dt>
-              <dd>使用技術、実験環境、システム構成などを記載</dd>
+              <dd>
+                <ul>
+                  <li>視線追跡（Eye Tracking）による入力取得</li>
+                  <li>動的オブジェクトの展開・分散制御</li>
+                  <li>視線とオブジェクト運動の一致による選択判定（Pursuits拡張）</li>
+                  <li>Cone Castingによる選択候補群の抽出</li>
+                  <li>Meta Quest Pro を用いたMR実験環境</li>
+                  <li>既存手法（Dwell, Outline Pursuits）との比較評価</li>
+                </ul>
+              </dd>
 
               <dt>Highlights</dt>
-              <dd>この研究で特に伝えたいポイントを書く</dd>
+              <dd>
+                <ul>
+                  <li>視線のみで「ポインティング＋確定」を統合した選択手法</li>
+                  <li>オブジェクトの重なり問題（遮蔽）を動的な展開によって解消</li>
+                  <li>複雑なMR環境でも高い選択精度と直感的操作を実現</li>
+                  <li>既存手法よりもユーザ体験（精度・使いやすさ）を総合的に改善</li>
+                </ul>
+              </dd>
             </dl>
 
-            <p class="research-note">必要に応じて、画像、図、動画リンク、発表情報をここに追加できます。</p>
+            <!-- <p class="research-note">必要に応じて、画像、図、動画リンク、発表情報をここに追加できます。</p> -->
           </section>
         </div>
       </section>
@@ -61,27 +92,45 @@
         </div>
         <div class="item">
           <section class="research-card">
-            <h3>ここに研究タイトルを記入</h3>
+            <h3>モビリティを介した異空間コミュニケーション</h3>
             <div class="research-visual">
-              <span>16:9 Image Area<br>研究テーマ2の画像や図をここに挿入</span>
+              <img src="assets/img/Research_Topic_02.jpg" alt="Research Topic 02" />
             </div>
             <p>
-              ここに研究テーマ2の概要を書きます。研究の着眼点、アプローチ、
-              他テーマとの違いなどを自由に整理してください。
+              近年，オンラインやメタバースの普及により遠隔コミュニケーションは拡大している一方で，車椅子における介助者との対話のような「身体的な位置関係に基づくコミュニケーション」は失われつつある。本研究では，物理空間とサイバー空間をモビリティ（電動車椅子）を介して接続する「Mobility Link XR」を提案する。360度映像とアバターを用いて空間を共有し，介助関係や同席関係といった位置関係を再現することで，単なる映像通信では得られない臨場感や対話の質の向上を目指す。
             </p>
 
             <dl class="research-meta">
               <dt>Keywords</dt>
-              <dd>キーワード1 / キーワード2 / キーワード3</dd>
+              <dd>XR / テレプレゼンス / モビリティコミュニケーション</dd>
 
               <dt>Methods / Technologies</dt>
-              <dd>使用技術、実験環境、システム構成などを記載</dd>
+              <dd>
+                <ul>
+                  <li>360度カメラによる環境取得とVR提示</li>
+                  <li>MRデバイスによるアバター可視化（空間共有）</li>
+                  <li>電動車椅子の遠隔操作（ROS + MQTT）</li>
+                  <li>Unity + Photon によるマルチユーザ同期</li>
+                  <li>2つのコミュニケーションシナリオ設計</li>
+                  <li>介助モード（前後関係）</li>
+                  <li>同席モード（隣接関係）</li>
+                </ul>
+              </dd>
 
               <dt>Highlights</dt>
-              <dd>この研究で特に伝えたいポイントを書く</dd>
+              <dd>
+                <ul>
+                  <li>「移動×XR」による新しい異空間コミュニケーションの提案</li>
+                  <li>身体的な位置関係（前後・横並び）を再現した設計</li>
+                  <li>アバターによる非言語表現がコミュニケーションを向上</li>
+                  <li>同席（横並び）配置が特に高い臨場感と対話のしやすさを実現</li>
+                </ul>
+              </dd>
             </dl>
 
-            <p class="research-note">必要に応じて、画像、図、動画リンク、発表情報をここに追加できます。</p>
+            <p class="research-note">
+              <a href="https://youtu.be/hI5aJJmvSIc" target="_blank" rel="noreferrer">[DICOMO2022 デモ紹介動画] はなれてたって僕らは一緒！車椅子のXRコミュニケーション</a>
+            </p>
           </section>
         </div>
       </section>
@@ -92,27 +141,44 @@
         </div>
         <div class="item">
           <section class="research-card">
-            <h3>ここに研究タイトルを記入</h3>
+            <h3>球体ディスプレイを用いた多拠点グループテレプレゼンス</h3>
             <div class="research-visual">
-              <span>16:9 Image Area<br>研究テーマ3の画像や図をここに挿入</span>
+              <img src="assets/img/Research_Topic_03.jpg" alt="Research Topic 03" />
             </div>
             <p>
-              ここに研究テーマ3の概要を書きます。現在の進捗、今後の展望、
-              応用先などを書いても見やすくまとまります。
+              遠隔コミュニケーションの発展により，複数拠点・多人数での同時接続が一般化しているが，従来のビデオ会議では拠点間の関係性や空間的な一体感が失われやすいという課題がある。特に多拠点環境では，情報の分断や注意の分散により，誰がどこにいるのか，どの拠点同士が関係しているのかが把握しづらい。本研究では，球体ディスプレイと360度映像を用いて複数拠点を一つの空間として統合するグループテレプレゼンス環境を提案する。さらに，逆パノラマ表現およびオーバーレイ表示を用いることで，拠点間の関係性や人物の存在を連続的に知覚できるよう設計し，多拠点コミュニケーションにおける空間的理解と相互作用の向上を目指す。
             </p>
 
             <dl class="research-meta">
               <dt>Keywords</dt>
-              <dd>キーワード1 / キーワード2 / キーワード3</dd>
+              <dd>グループテレプレゼンス / 球体ディスプレイ / 多拠点コミュニケーション</dd>
 
               <dt>Methods / Technologies</dt>
-              <dd>使用技術、実験環境、システム構成などを記載</dd>
+              <dd>
+                <ul>
+                  <li>球体ディスプレイによる全周囲表示（空間共有インタフェース）</li>
+                  <li>360度映像のリアルタイム統合（複数拠点入力）</li>
+                  <li>逆パノラマ（Inverse Panorama）による空間投影</li>
+                  <li>オーバーレイ合成による複数拠点の同時可視化</li>
+                  <li>座標変換（極座標ベース）による視覚的一貫性の維持</li>
+                  <li>MetaPoを基盤とした多拠点接続・表示システム</li>
+                </ul>
+              </dd>
 
               <dt>Highlights</dt>
-              <dd>この研究で特に伝えたいポイントを書く</dd>
+              <dd>
+                <ul>
+                  <li>複数拠点を「分割」ではなく「統合」して提示する新しい設計</li>
+                  <li>球体ディスプレイにより全方向的かつ対称的なコミュニケーションを実現</li>
+                  <li>逆パノラマにより視覚的な連続性と空間的一貫性を向上</li>
+                  <li>多人数・多拠点における存在感・関係性の知覚を強化</li>
+                </ul>
+              </dd>
             </dl>
 
-            <p class="research-note">必要に応じて、画像、図、動画リンク、発表情報をここに追加できます。</p>
+            <p class="research-note">
+              <a href="https://youtu.be/JC4mYAypXrU" target="_blank" rel="noreferrer">[SIGGRAPH2022 Poster] MetaPo: A Robotic Meta Portal for Interspace Communication</a>
+            </p>
           </section>
         </div>
       </section>
