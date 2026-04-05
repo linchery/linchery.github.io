@@ -1,0 +1,40 @@
+{
+  "items": [
+    {
+      "date": "2025-06-01",
+      "displayDate": "2025.06",
+      "category": "note",
+      "categoryLabel": "Paper",
+      "content": "情報処理学会論文誌に「Moving Pursuits：MR空間における視線を用いた遮蔽オブジェクトの選択手法」が採択されました。",
+      "published": true,
+      "featured": true
+    },
+    {
+      "date": "2024-09-01",
+      "displayDate": "2024.09",
+      "category": "talk",
+      "categoryLabel": "Talk",
+      "content": "UbiComp2024 Doctoral Colloquium にて「Enhancing Group Telepresence Interaction through Seamless Inverse Panorama Projection on Spherical Display」を発表しました。",
+      "published": true,
+      "featured": true
+    },
+    {
+      "date": "2022-07-01",
+      "displayDate": "2022.07",
+      "category": "award",
+      "categoryLabel": "Award",
+      "content": "DICOMO 2022 にて野口賞を受賞しました。",
+      "published": true,
+      "featured": true
+    },
+    {
+      "date": "2021-08-01",
+      "displayDate": "2021.08",
+      "category": "paper",
+      "categoryLabel": "Paper",
+      "content": "HCI International 2021 にて Mixed Reality における視線選択手法を発表しました。",
+      "published": true,
+      "featured": false
+    }
+  ]
+}

@@ -291,6 +291,10 @@
     background: #9ea96b;
 }
 
+.badge-note {
+    background: #8e86b7;
+}
+
 .home-summary-card,
 .publication-pick {
     border: 1px solid #e7dfd8;
