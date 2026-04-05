@@ -4,15 +4,15 @@ const SITE_CONFIG = {
   affiliationHtml:
     'Graduate School of Engineering<br>Nagoya University<br/><a href="http://www.ucl.nuee.nagoya-u.ac.jp">Nobuo Kawaguchi Lab.</a>',
   profileImages: {
-    sp: "./assets/img/profile.jpg",
-    pc: "./assets/img/profile_wide.jpg",
+    sp: "./assets/img/profile/profile.jpg",
+    pc: "./assets/img/profile/profile_wide.jpg",
   },
   navItems: [
     { key: "home", href: "index.html", label: "HOME" },
     { key: "profile", href: "profile.html", label: "PROFILE" },
     { key: "research", href: "research.html", label: "RESEARCH" },
     { key: "publication", href: "publication.html", label: "PUBLICATION" },
-    { key: "special", href: "special.html", label: "SPECIAL" },
+    { key: "notes", href: "notes.html", label: "NOTES" },
     { key: "gallery", href: "gallery.html", label: "GALLERY" },
   ],
   socialLinks: [
@@ -20,31 +20,31 @@ const SITE_CONFIG = {
       key: "icon_X",
       href: "https://x.com/linda_uclab",
       label: "X",
-      iconSrc: "./assets/img/icon_X.svg",
+      iconSrc: "./assets/img/icons/icon_X.svg",
     },
     {
       key: "icon_instagram",
       href: "https://www.instagram.com/linchery",
       label: "Instagram",
-      iconSrc: "./assets/img/icon_instagram.svg",
+      iconSrc: "./assets/img/icons/icon_instagram.svg",
     },
     {
       key: "icon_facebook",
       href: "https://m.facebook.com/linchery.nh",
       label: "Facebook",
-      iconSrc: "./assets/img/icon_facebook.svg",
+      iconSrc: "./assets/img/icons/icon_facebook.svg",
     },
     {
       key: "icon_youtube",
       href: "https://youtube.com/@linchery",
       label: "YouTube",
-      iconSrc: "./assets/img/icon_youtube.svg",
+      iconSrc: "./assets/img/icons/icon_youtube.svg",
     },
     {
       key: "icon_github",
       href: "https://github.com/linchery/",
       label: "GitHub",
-      iconSrc: "./assets/img/icon_github.svg",
+      iconSrc: "./assets/img/icons/icon_github.svg",
     },
   ],
   footer: {
@@ -58,7 +58,7 @@ const PAGE_TITLE_DECORATIONS = {
   profile: "title_deco_green",
   research: "title_deco_blue",
   publication: "title_deco_pink",
-  special: "title_deco_green",
+  notes: "title_deco_green",
   gallery: "title_deco_blue",
 };
 

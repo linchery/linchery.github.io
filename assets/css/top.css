@@ -89,15 +89,15 @@
 }
 
 .title_deco_blue::after {
-    background-image: url("../img/title_deco_blue.png");
+    background-image: url("../img/deco/title_deco_blue.png");
 }
 
 .title_deco_pink::after {
-    background-image: url("../img/title_deco_pink.png");
+    background-image: url("../img/deco/title_deco_pink.png");
 }
 
 .title_deco_green::after {
-    background-image: url("../img/title_deco_green.png");
+    background-image: url("../img/deco/title_deco_green.png");
 }
 
 @keyframes title-rise-in {

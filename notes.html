@@ -1,0 +1,378 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <link rel="shortcut icon" type="image/x-icon" href="assets/img/common/Capybarasan.ico">
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="stylesheet" href="assets/css/top.css"/>
+  <link rel="stylesheet" href="assets/css/menu.css"/>
+  <script defer src="assets/js/site.js"></script>
+  <script defer src="assets/js/top.js"></script>
+  <script defer src="assets/js/notes.js"></script>
+  <style>
+    .notes-page .contents {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .notes-feed {
+      display: grid;
+      gap: 3rem;
+    }
+
+    .note-entry {
+      border: 1px solid #e4d9cd;
+      padding: 1.5rem 1.5rem 2rem;
+      background: #fffdfa;
+    }
+
+    .note-entry-header {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      gap: 1.5rem;
+      align-items: start;
+      margin-bottom: 1.75rem;
+    }
+
+    .note-avatar {
+      width: 92px;
+      height: 92px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #f1ece6;
+    }
+
+    .note-avatar img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .note-meta {
+      padding-top: 0.75rem;
+    }
+
+    .note-date {
+      margin: 0 0 0.45rem;
+      color: #80786f;
+      font-size: 0.95rem;
+      letter-spacing: 0.18em;
+      border-bottom: 1px solid #9f978f;
+      padding-bottom: 0.4rem;
+    }
+
+    .note-title {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: #25211e;
+    }
+
+    .note-body {
+      max-width: 640px;
+      color: #292522;
+      font-size: 1rem;
+      line-height: 2;
+    }
+
+    .note-body p,
+    .note-body ul,
+    .note-body ol {
+      margin: 0 0 1.2rem;
+    }
+
+    .note-body ul,
+    .note-body ol {
+      padding-left: 1.5rem;
+    }
+
+    .note-body li {
+      list-style: disc;
+      margin-bottom: 0.3rem;
+    }
+
+    .note-body ol li {
+      list-style: decimal;
+    }
+
+    .note-body strong {
+      font-weight: 600;
+    }
+
+    .note-image {
+      margin-top: 1.2rem;
+      max-width: 640px;
+      position: relative;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .note-single {
+      width: min(100%, 640px);
+    }
+
+    .note-single-frame {
+      width: 50%;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f1ece6;
+      overflow: hidden;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .note-image img {
+      display: block;
+      width: auto;
+      max-width: 100%;
+      max-height: 100%;
+      height: auto;
+      background: #f1ece6;
+    }
+
+    .note-gallery {
+      overflow: hidden;
+      width: min(100%, 900px);
+      padding-inline: 0;
+    }
+
+    .note-gallery::before,
+    .note-gallery::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 2rem;
+      width: 3.2rem;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .note-gallery::before {
+      left: 0;
+      background: linear-gradient(90deg, #fffdfa 0%, rgba(255, 253, 250, 0) 100%);
+    }
+
+    .note-gallery::after {
+      right: 0;
+      background: linear-gradient(270deg, #fffdfa 0%, rgba(255, 253, 250, 0) 100%);
+    }
+
+    .note-gallery-track {
+      display: flex;
+      align-items: stretch;
+      transition: transform 0.28s ease;
+    }
+
+    .note-gallery-track.is-no-transition {
+      transition: none;
+    }
+
+    .note-gallery-slide {
+      width: 50%;
+      flex: 0 0 50%;
+      padding-inline: 0.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.55;
+      transform: scale(0.92);
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+
+    .note-gallery-frame {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f1ece6;
+      overflow: hidden;
+    }
+
+    .note-gallery-slide img {
+      width: auto;
+      max-width: 100%;
+      max-height: 100%;
+      height: auto;
+      object-fit: contain;
+      margin: 0 auto;
+    }
+
+    .note-gallery-slide.is-active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .note-gallery-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.2rem;
+      height: 2.2rem;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(255, 253, 250, 0.92);
+      color: #4b4640;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .note-gallery-arrow[data-direction="prev"] {
+      left: 0.25rem;
+    }
+
+    .note-gallery-arrow[data-direction="next"] {
+      right: 0.25rem;
+    }
+
+    .note-gallery-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.45rem;
+      margin-top: 0.85rem;
+    }
+
+    .note-gallery-dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      border: 0;
+      border-radius: 50%;
+      background: #d7cec5;
+      cursor: pointer;
+    }
+
+    .note-gallery-dot.is-active {
+      background: #8c8074;
+    }
+
+    .note-feed-status {
+      color: #80786f;
+      text-align: center;
+      letter-spacing: 0.08em;
+    }
+
+    .note-pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.8rem;
+      margin-top: 2.75rem;
+    }
+
+    .note-page-button {
+      width: 2.3rem;
+      height: 2.3rem;
+      border: 0;
+      border-radius: 50%;
+      background: #f6f3ee;
+      color: #4b4640;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .note-page-button.is-current {
+      background: linear-gradient(180deg, #f2f0ec, #ded8d1);
+      color: #ffffff;
+      cursor: default;
+    }
+
+    .note-page-button:hover:not(.is-current) {
+      background: #ece5dc;
+    }
+
+    .note-empty {
+      border: 1px solid #e4d9cd;
+      padding: 3rem 1.5rem;
+      text-align: center;
+      color: #8a7d71;
+      background: #fffdfa;
+    }
+
+    @media screen and (max-width: 767px) {
+      .notes-page .contents {
+        padding-inline: 1rem;
+      }
+
+      .note-entry {
+        padding: 1rem 1rem 1.4rem;
+      }
+
+      .note-entry-header {
+        grid-template-columns: 68px minmax(0, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .note-avatar {
+        width: 68px;
+        height: 68px;
+      }
+
+      .note-meta {
+        padding-top: 0.25rem;
+      }
+
+      .note-date {
+        font-size: 0.82rem;
+        letter-spacing: 0.12em;
+      }
+
+      .note-title {
+        font-size: 1.5rem;
+      }
+
+      .note-gallery {
+        width: 100%;
+      }
+
+      .note-single {
+        width: 100%;
+      }
+
+      .note-single-frame {
+        width: 58%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .note-gallery::before,
+      .note-gallery::after {
+        width: 2rem;
+      }
+
+      .note-gallery-slide {
+        width: 58%;
+        flex-basis: 58%;
+        padding-inline: 0.25rem;
+      }
+    }
+  </style>
+</head>
+
+<body class="is-preload notes-page" data-page="notes" data-page-title="Notes">
+<div data-site-menu></div>
+<div data-site-header></div>
+
+<div id="wrap">
+  <main class="main">
+    <article class="contents">
+      <div class="notes-feed" data-notes-feed>
+        <div class="note-feed-status">Loading notes...</div>
+      </div>
+      <nav class="note-pagination" data-notes-pagination aria-label="Notes pagination"></nav>
+    </article>
+  </main>
+
+  <div data-site-social></div>
+  <div data-site-footer></div>
+</div>
+</body>
+
+</html>
