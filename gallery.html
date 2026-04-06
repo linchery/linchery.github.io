@@ -558,6 +558,7 @@
     };
     const PORTAL_CONFIG = {
       targetHref: "gallery-landscape.html",
+      previewDataUrl: "assets/data/gallery-landscape.json",
       label: "LANDSCAPE ROOM",
       subtitle: "Click to enter",
       base: "#e7ecef",
@@ -568,7 +569,7 @@
     };
     const SPATIAL_LAYOUT = {
       centerHalf: 6.2,
-      corridorHalf: 2.8,
+      corridorHalf: 3.4,
       corridorLength: 3.2,
       roomHalfW: 6,
       roomHalfD: 6,
@@ -621,7 +622,7 @@
     scene.fog = new THREE.Fog(0x1a1008, 20, 60);
 
     const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.set(0, 1.9, 3.1);
+    camera.position.set(0, 1.9, 4.8);
     camera.rotation.order = "YXZ";
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -856,55 +857,60 @@
       };
     }
 
+    function drawCoverImage(ctx, image, x, y, width, height) {
+      const imageAspect = image.width / image.height;
+      const frameAspect = width / height;
+      let drawWidth = width;
+      let drawHeight = height;
+      let offsetX = x;
+      let offsetY = y;
+
+      if (imageAspect > frameAspect) {
+        drawWidth = height * imageAspect;
+        drawHeight = height;
+        offsetX = x - (drawWidth - width) / 2;
+      } else {
+        drawWidth = width;
+        drawHeight = width / imageAspect;
+        offsetY = y - (drawHeight - height) / 2;
+      }
+
+      ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
+    }
+
+    function loadPortalPreviewImage(src) {
+      return new Promise((resolve) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = () => resolve(null);
+        image.src = src;
+      });
+    }
+
+    async function loadPortalPreviewImages(dataUrl, count) {
+      try {
+        const response = await fetch(dataUrl, { cache: "no-cache" });
+        if (!response.ok) {
+          throw new Error("Failed to load preview gallery data");
+        }
+        const data = await response.json();
+        const sources = (Array.isArray(data.photos) ? data.photos : [])
+          .map((photo) => photo.src)
+          .filter(Boolean)
+          .slice(0, count);
+        const images = await Promise.all(sources.map((src) => loadPortalPreviewImage(src)));
+        return images.filter(Boolean);
+      } catch (error) {
+        console.warn("Portal preview images could not be loaded", error);
+        return [];
+      }
+    }
+
     function createPortalPreviewTexture(config) {
       const c = document.createElement("canvas");
       c.width = 1024;
       c.height = 512;
       const ctx = c.getContext("2d");
-
-      const bg = ctx.createLinearGradient(0, 0, c.width, c.height);
-      bg.addColorStop(0, config.base);
-      bg.addColorStop(1, "#f8fafb");
-      ctx.fillStyle = bg;
-      ctx.fillRect(0, 0, c.width, c.height);
-
-      const ceiling = ctx.createLinearGradient(0, 0, 0, 170);
-      ceiling.addColorStop(0, "#fbfcfd");
-      ceiling.addColorStop(1, "#eef2f5");
-      ctx.fillStyle = ceiling;
-      ctx.fillRect(0, 0, c.width, 168);
-
-      ctx.fillStyle = "#f8fbfd";
-      ctx.fillRect(0, 168, c.width, 184);
-
-      const floor = ctx.createLinearGradient(0, 352, 0, 512);
-      floor.addColorStop(0, "#d7e0e6");
-      floor.addColorStop(1, "#c1cfd8");
-      ctx.fillStyle = floor;
-      ctx.fillRect(0, 352, c.width, 160);
-
-      ctx.strokeStyle = "rgba(173, 192, 205, 0.48)";
-      ctx.lineWidth = 1;
-      for (let x = 0; x <= c.width; x += 42) {
-        ctx.beginPath();
-        ctx.moveTo(x, 352);
-        ctx.lineTo(x + 28, 512);
-        ctx.stroke();
-      }
-      for (let y = 362; y <= 512; y += 20) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(c.width, y);
-        ctx.stroke();
-      }
-
-      ctx.fillStyle = "rgba(255,255,255,0.82)";
-      [126, 382, 638, 894].forEach((x) => {
-        ctx.fillRect(x - 46, 168, 92, 26);
-      });
-      [254, 510, 766, 1000].forEach((x) => {
-        ctx.fillRect(x - 13, 220, 26, 92);
-      });
 
       const frameGroups = [
         [52, 128, 204],
@@ -912,32 +918,104 @@
         [564, 640, 716],
         [820, 896, 972],
       ];
-      frameGroups.forEach((group, groupIndex) => {
+      const frames = [];
+      frameGroups.forEach((group) => {
         group.forEach((x, index) => {
-          const frame = { x, y: 212 + (index % 2) * 10, w: 54, h: 74 };
+          frames.push({ x, y: 212 + (index % 2) * 10, w: 54, h: 74 });
+        });
+      });
+
+      function drawPreview(images) {
+        const bg = ctx.createLinearGradient(0, 0, c.width, c.height);
+        bg.addColorStop(0, config.base);
+        bg.addColorStop(1, "#f8fafb");
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, c.width, c.height);
+
+        const ceiling = ctx.createLinearGradient(0, 0, 0, 170);
+        ceiling.addColorStop(0, "#fbfcfd");
+        ceiling.addColorStop(1, "#eef2f5");
+        ctx.fillStyle = ceiling;
+        ctx.fillRect(0, 0, c.width, 168);
+
+        ctx.fillStyle = "#f8fbfd";
+        ctx.fillRect(0, 168, c.width, 184);
+
+        const floor = ctx.createLinearGradient(0, 352, 0, 512);
+        floor.addColorStop(0, "#d7e0e6");
+        floor.addColorStop(1, "#c1cfd8");
+        ctx.fillStyle = floor;
+        ctx.fillRect(0, 352, c.width, 160);
+
+        ctx.strokeStyle = "rgba(173, 192, 205, 0.48)";
+        ctx.lineWidth = 1;
+        for (let x = 0; x <= c.width; x += 42) {
+          ctx.beginPath();
+          ctx.moveTo(x, 352);
+          ctx.lineTo(x + 28, 512);
+          ctx.stroke();
+        }
+        for (let y = 362; y <= 512; y += 20) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(c.width, y);
+          ctx.stroke();
+        }
+
+        ctx.fillStyle = "rgba(255,255,255,0.82)";
+        [126, 382, 638, 894].forEach((x) => {
+          ctx.fillRect(x - 46, 168, 92, 26);
+        });
+        [254, 510, 766, 1000].forEach((x) => {
+          ctx.fillRect(x - 13, 220, 26, 92);
+        });
+
+        frames.forEach((frame, frameIndex) => {
           ctx.fillStyle = "rgba(0,0,0,0.14)";
           ctx.fillRect(frame.x + 5, frame.y + 6, frame.w, frame.h);
           ctx.fillStyle = config.frame;
           ctx.fillRect(frame.x, frame.y, frame.w, frame.h);
-          const art = ctx.createLinearGradient(frame.x, frame.y, frame.x + frame.w, frame.y + frame.h);
-          art.addColorStop(0, (groupIndex + index) % 2 === 0 ? "#dceaf3" : "#efe2ea");
-          art.addColorStop(1, "#ffffff");
-          ctx.fillStyle = art;
-          ctx.fillRect(frame.x + 8, frame.y + 8, frame.w - 16, frame.h - 16);
+          const innerX = frame.x + 8;
+          const innerY = frame.y + 8;
+          const innerW = frame.w - 16;
+          const innerH = frame.h - 16;
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(innerX, innerY, innerW, innerH);
+          ctx.clip();
+          if (images[frameIndex]) {
+            drawCoverImage(ctx, images[frameIndex], innerX, innerY, innerW, innerH);
+          } else {
+            const art = ctx.createLinearGradient(frame.x, frame.y, frame.x + frame.w, frame.y + frame.h);
+            art.addColorStop(0, frameIndex % 2 === 0 ? "#dceaf3" : "#efe2ea");
+            art.addColorStop(1, "#ffffff");
+            ctx.fillStyle = art;
+            ctx.fillRect(innerX, innerY, innerW, innerH);
+          }
+          ctx.restore();
         });
-      });
 
-      const portalGlow = ctx.createRadialGradient(512, 258, 12, 512, 258, 74);
-      portalGlow.addColorStop(0, "rgba(120, 158, 227, 0.98)");
-      portalGlow.addColorStop(0.55, "rgba(132, 170, 236, 0.46)");
-      portalGlow.addColorStop(1, "rgba(132, 170, 236, 0)");
-      ctx.fillStyle = portalGlow;
-      ctx.beginPath();
-      ctx.arc(512, 258, 74, 0, Math.PI * 2);
-      ctx.fill();
+        const portalGlow = ctx.createRadialGradient(512, 258, 12, 512, 258, 74);
+        portalGlow.addColorStop(0, "rgba(120, 158, 227, 0.98)");
+        portalGlow.addColorStop(0.55, "rgba(132, 170, 236, 0.46)");
+        portalGlow.addColorStop(1, "rgba(132, 170, 236, 0)");
+        ctx.fillStyle = portalGlow;
+        ctx.beginPath();
+        ctx.arc(512, 258, 74, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      drawPreview([]);
 
       const texture = new THREE.CanvasTexture(c);
       texture.encoding = THREE.sRGBEncoding;
+      loadPortalPreviewImages(config.previewDataUrl, frames.length).then((images) => {
+        if (!images.length) {
+          return;
+        }
+        drawPreview(images);
+        texture.needsUpdate = true;
+      });
       return texture;
     }
 
@@ -1395,13 +1473,18 @@
     }
 
     function clampPosition(nextX, nextZ) {
-      const margin = 0.05;
-      const candidateZones = allowedZones.map((zone) => ({
-        minX: zone.minX + margin,
-        maxX: zone.maxX - margin,
-        minZ: zone.minZ + margin,
-        maxZ: zone.maxZ - margin,
-      }));
+      const edgeMargin = 0.28;
+      const candidateZones = [
+        { minX: -centerHalf, maxX: centerHalf, minZ: -centerHalf, maxZ: centerHalf },
+        { minX: -corridorHalf + edgeMargin, maxX: corridorHalf - edgeMargin, minZ: -(centerHalf + corridorLength), maxZ: -centerHalf },
+        { minX: -roomHalfW + edgeMargin, maxX: roomHalfW - edgeMargin, minZ: northRoomCenterZ - roomHalfD + edgeMargin, maxZ: northRoomCenterZ + roomHalfD },
+        { minX: -corridorHalf + edgeMargin, maxX: corridorHalf - edgeMargin, minZ: centerHalf, maxZ: centerHalf + corridorLength },
+        { minX: -roomHalfW + edgeMargin, maxX: roomHalfW - edgeMargin, minZ: southRoomCenterZ - roomHalfD, maxZ: southRoomCenterZ + roomHalfD - edgeMargin },
+        { minX: -(centerHalf + corridorLength), maxX: -centerHalf, minZ: -corridorHalf + edgeMargin, maxZ: corridorHalf - edgeMargin },
+        { minX: westRoomCenterX - roomHalfW + edgeMargin, maxX: westRoomCenterX + roomHalfW, minZ: -roomHalfD + edgeMargin, maxZ: roomHalfD - edgeMargin },
+        { minX: centerHalf, maxX: centerHalf + corridorLength, minZ: -corridorHalf + edgeMargin, maxZ: corridorHalf - edgeMargin },
+        { minX: eastRoomCenterX - roomHalfW, maxX: eastRoomCenterX + roomHalfW - edgeMargin, minZ: -roomHalfD + edgeMargin, maxZ: roomHalfD - edgeMargin },
+      ];
 
       for (const zone of candidateZones) {
         if (nextX >= zone.minX && nextX <= zone.maxX && nextZ >= zone.minZ && nextZ <= zone.maxZ) {
@@ -1422,7 +1505,7 @@
       return best ? { x: best.x, z: best.z } : { x: 0, z: 0 };
     }
 
-    function updateMovement() {
+    function updateMovement(delta) {
       const keyForward = (keys.KeyW || keys.ArrowUp ? 1 : 0) - (keys.KeyS || keys.ArrowDown ? 1 : 0);
       const keyStrafe = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0);
       const moveForward = keyForward + (-joystickY * MOVEMENT_SETTINGS.joystickSensitivity);
@@ -1431,7 +1514,7 @@
         return;
       }
 
-      const speed = MOVEMENT_SETTINGS.walkSpeed;
+      const speed = MOVEMENT_SETTINGS.walkSpeed * delta * 60;
       const forward = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
       const right = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw));
       const move = new THREE.Vector3();
@@ -1625,13 +1708,15 @@
     // ============================================================
     //  Animation Loop
     // ============================================================
+    const PORTAL_ROTATION_SPEED = 0.24;
+
     function animate() {
       requestAnimationFrame(animate);
-      clock.getDelta();
-      updateMovement();
+      const delta = clock.getDelta();
+      updateMovement(delta);
       applyCameraRotation();
       if (portalOrb) {
-        portalOrb.rotation.y += 0.004;
+        portalOrb.rotation.y += PORTAL_ROTATION_SPEED * delta;
       }
       renderer.render(scene, camera);
     }
