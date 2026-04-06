@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="assets/css/style.css"/>
   <link rel="stylesheet" href="assets/css/menu.css"/>
   <script defer src="assets/js/site.js"></script>
-  <title>3D Photo Gallery</title>
+  <title>Landscape Photo Gallery</title>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Amiri&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@300;400;500&display=swap");
 
@@ -53,9 +53,9 @@
       gap: 8px;
       padding: 8px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.84);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(60, 56, 49, 0.12);
+      box-shadow: 0 18px 36px rgba(66, 58, 46, 0.14);
       backdrop-filter: blur(8px);
     }
 
@@ -70,13 +70,13 @@
       font-size: 0.75rem;
       letter-spacing: 0.14em;
       text-decoration: none;
-      color: #f7f5f0;
-      background: rgba(255, 255, 255, 0.12);
+      color: #6c645c;
+      background: rgba(247, 245, 240, 0.9);
     }
 
     .gallery-switcher .is-current {
-      background: rgba(255, 255, 255, 0.92);
-      color: #2c2114;
+      background: #3a352f;
+      color: #fffdf9;
     }
 
     #settings-toggle {
@@ -385,8 +385,8 @@
   <canvas id="c"></canvas>
 
   <div class="gallery-switcher" aria-label="Gallery room switcher">
-    <span class="is-current">PORTRAIT ROOM</span>
-    <a href="gallery-landscape.html">LANDSCAPE ROOM</a>
+    <a href="gallery.html">PORTRAIT ROOM</a>
+    <span class="is-current">LANDSCAPE ROOM</span>
   </div>
 
   <div id="overlay" aria-hidden="true">
@@ -414,7 +414,7 @@
     // ============================================================
     //  USER SETTINGS — 作品情報は assets/data/gallery.json を編集します
     // ============================================================
-    const GALLERY_DATA_URL = "assets/data/gallery.json";
+    const GALLERY_DATA_URL = "assets/data/gallery-landscape.json";
     const DEFAULT_PHOTOS = [
       {
         src: "assets/img/gallery/gallery_img_01.webp",
@@ -600,8 +600,8 @@
     const overlayLocationEl = document.getElementById("overlayLocation");
     const overlayCloseEl = document.getElementById("overlayClose");
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a1008);
-    scene.fog = new THREE.Fog(0x1a1008, 20, 60);
+    scene.background = new THREE.Color(0xfaf8f4);
+    scene.fog = null;
 
     const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.set(0, 1.9, ROOM_D / 2 - 2);
@@ -698,10 +698,13 @@
       canvasTex.height = 128;
       const ctx = canvasTex.getContext("2d");
 
-      ctx.fillStyle = "#2a1f10";
+      const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+      gradient.addColorStop(0, "#d7e0e6");
+      gradient.addColorStop(1, "#c2cfd8");
+      ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, 128, 128);
-      ctx.strokeStyle = "#3a2d1a";
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#aec0cd";
+      ctx.lineWidth = 1;
 
       for (let i = 0; i <= 128; i += 16) {
         ctx.beginPath();
@@ -712,6 +715,11 @@
         ctx.moveTo(0, i + 0.5);
         ctx.lineTo(128, i + 0.5);
         ctx.stroke();
+      }
+
+      ctx.fillStyle = "rgba(255,255,255,0.12)";
+      for (let y = 0; y < 128; y += 24) {
+        ctx.fillRect(0, y, 128, 6);
       }
 
       const texture = new THREE.CanvasTexture(canvasTex);
@@ -727,19 +735,19 @@
       c.width = 128;
       c.height = 128;
       const ctx = c.getContext("2d");
-      ctx.fillStyle = "#1e1810";
+      ctx.fillStyle = "#f4f1eb";
       ctx.fillRect(0, 0, 128, 128);
-      ctx.fillStyle = "#251e14";
-      for (let row = 0; row < 8; row += 1) {
-        const offset = row % 2 === 0 ? 0 : 32;
-        for (let col = 0; col < 4; col += 1) {
-          ctx.fillRect(col * 64 + offset + 1, row * 16 + 1, 62, 14);
-        }
+      ctx.strokeStyle = "rgba(201, 196, 188, 0.4)";
+      for (let row = 0; row <= 128; row += 16) {
+        ctx.beginPath();
+        ctx.moveTo(0, row + 0.5);
+        ctx.lineTo(128, row + 0.5);
+        ctx.stroke();
       }
       const texture = new THREE.CanvasTexture(c);
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
-      texture.repeat.set(6, 2);
+      texture.repeat.set(4, 2);
       texture.encoding = THREE.sRGBEncoding;
       return texture;
     }
@@ -891,9 +899,9 @@
       const floorTexture = createFloorTexture();
       const wallTexture = createWallTexture();
       const wallMaterial = new THREE.MeshStandardMaterial({
-        color: 0x1f1811,
+        color: 0xf4f1eb,
         map: wallTexture,
-        roughness: 0.92,
+        roughness: 0.95,
         metalness: 0.02,
       });
 
@@ -901,19 +909,19 @@
       ceilingTexture.needsUpdate = true;
 
       const ceilingMaterial = new THREE.MeshStandardMaterial({
-        color: 0x2a1f10,
+        color: 0xe1e6ea,
         map: ceilingTexture,
-        roughness: 0.75,
-        metalness: 0.03,
+        roughness: 0.85,
+        metalness: 0.02,
       });
 
       const floor = new THREE.Mesh(
         new THREE.BoxGeometry(ROOM_W, 0.1, ROOM_D),
         new THREE.MeshStandardMaterial({
-          color: 0x2a1f10,
+          color: 0xcfd9e1,
           map: floorTexture,
-          roughness: 0.75,
-          metalness: 0.03,
+          roughness: 0.48,
+          metalness: 0.06,
         })
       );
       floor.position.y = -0.05;
@@ -945,15 +953,14 @@
         scene.add(mesh);
       });
 
-
       const barrierPostMaterial = new THREE.MeshStandardMaterial({
-        color: 0xc0a060,
-        roughness: 0.38,
-        metalness: 0.22,
+        color: 0xbba472,
+        roughness: 0.34,
+        metalness: 0.2,
       });
 
       const barrierPoleMaterial = new THREE.MeshStandardMaterial({
-        color: 0x050505,
+        color: 0x1d1d1d,
         roughness: 0.72,
         metalness: 0.03,
       });
@@ -961,7 +968,7 @@
       const ropeTexture = createRopeTexture();
 
       const barrierRopeMaterial = new THREE.MeshStandardMaterial({
-        color: 0xc82323,
+        color: 0xbf2a2a,
         map: ropeTexture,
         roughness: 0.95,
         metalness: 0.02,
@@ -1022,43 +1029,14 @@
         topRope.castShadow = true;
         scene.add(topRope);
       }
-
     }
 
     // ============================================================
     //  Lighting
     // ============================================================
     function addLights() {
-      scene.add(new THREE.AmbientLight(0x3d2b10, 1.2));
-
-      [
-        [-6, ROOM_D / 2 - 4],
-        [0, ROOM_D / 2 - 4],
-        [6, ROOM_D / 2 - 4],
-        [-6, 4],
-        [0, 4],
-        [6, 4],
-        [-6, -4],
-        [0, -4],
-        [6, -4],
-        [-6, -ROOM_D / 2 + 4],
-        [0, -ROOM_D / 2 + 4],
-        [6, -ROOM_D / 2 + 4],
-      ].forEach(([x, z]) => {
-        const spot = new THREE.SpotLight(0xfffde0, 1.2, 20, Math.PI / 5, 0.4);
-        spot.position.set(x, ROOM_H - 0.2, z);
-        spot.target.position.set(x, 0, z);
-        spot.castShadow = true;
-        scene.add(spot);
-        scene.add(spot.target);
-
-        const fixture = new THREE.Mesh(
-          new THREE.BoxGeometry(0.3, 0.15, 0.3),
-          new THREE.MeshBasicMaterial({ color: 0xfffde0 })
-        );
-        fixture.position.set(x, ROOM_H - 0.1, z);
-        scene.add(fixture);
-      });
+      scene.add(new THREE.AmbientLight(0xffffff, 1.08));
+      scene.add(new THREE.HemisphereLight(0xffffff, 0xd9dfe4, 0.18));
     }
 
     // ============================================================
@@ -1165,17 +1143,10 @@
       scene.add(group);
 
       if (placement.spotlight !== false) {
-        const spot = new THREE.SpotLight(0xfff8ee, 2.0, 10, Math.PI / 7, 0.5);
-        spot.position.set(placement.wx, ROOM_H - 0.15, placement.wz);
-        spot.target.position.set(placement.wx, placement.wy, placement.wz);
-        spot.castShadow = placement.shadow === true;
-        if (placement.shadow === true) {
-          spot.shadow.mapSize.width = 1024;
-          spot.shadow.mapSize.height = 1024;
-          spot.shadow.bias = -0.00012;
-        }
-        scene.add(spot);
-        scene.add(spot.target);
+        const glow = new THREE.RectAreaLight(0xffffff, 1.6, fw + 0.55, fh + 0.55);
+        glow.position.set(0, 0, 0.12);
+        glow.lookAt(0, 0, 1);
+        group.add(glow);
       }
     }
 

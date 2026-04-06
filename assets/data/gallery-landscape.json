@@ -1,0 +1,193 @@
+{
+  "photos": [
+    {
+      "src": "assets/img/dummy/dummy_16x9.webp",
+      "title": "Coastal Light",
+      "description": "海辺の光をイメージしたダミー風景作品です。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-06",
+      "location": "Landscape Room",
+      "color": "#8bb7d9",
+      "accent": "#dcebf7"
+    },
+    {
+      "src": "assets/img/dummy/dummy_4x3.webp",
+      "title": "Quiet Horizon",
+      "description": "水平線を想定したダミー風景作品です。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-06",
+      "location": "Landscape Room",
+      "color": "#b7c89d",
+      "accent": "#edf3e1"
+    },
+    {
+      "src": "assets/img/dummy/dummy_16x9.webp",
+      "title": "White Valley",
+      "description": "明るい展示室に合う風景作品のダミーです。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-06",
+      "location": "Landscape Room",
+      "color": "#c8b3a2",
+      "accent": "#f4e8df"
+    },
+    {
+      "src": "assets/img/dummy/dummy_4x3.webp",
+      "title": "Soft Ridge",
+      "description": "左壁に展示する風景作品のダミーです。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-06",
+      "location": "Landscape Room",
+      "color": "#98afbf",
+      "accent": "#dde8ef"
+    },
+    {
+      "src": "assets/img/dummy/dummy_16x9.webp",
+      "title": "Misty River",
+      "description": "左壁に展示する風景作品のダミーです。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-06",
+      "location": "Landscape Room",
+      "color": "#a9bfa6",
+      "accent": "#e6f0e4"
+    },
+    {
+      "src": "assets/img/dummy/dummy_4x3.webp",
+      "title": "Open Field",
+      "description": "右壁に展示する風景作品のダミーです。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-06",
+      "location": "Landscape Room",
+      "color": "#d4c1a8",
+      "accent": "#f5ede3"
+    },
+    {
+      "src": "assets/img/dummy/dummy_16x9.webp",
+      "title": "After Rain",
+      "description": "右壁に展示する風景作品のダミーです。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-06",
+      "location": "Landscape Room",
+      "color": "#8faac0",
+      "accent": "#dce8f0"
+    },
+    {
+      "src": "assets/img/dummy/dummy_4x3.webp",
+      "title": "Stone Path",
+      "description": "右壁に展示する風景作品のダミーです。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-06",
+      "location": "Landscape Room",
+      "color": "#c0b09d",
+      "accent": "#efe5db"
+    },
+    {
+      "src": "assets/img/dummy/dummy_16x9.webp",
+      "title": "Cloud Edge",
+      "description": "中央の仕切り壁内側に展示する風景作品のダミーです。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-06",
+      "location": "Landscape Room",
+      "color": "#8ca4bb",
+      "accent": "#dce7f0"
+    },
+    {
+      "src": "assets/img/dummy/dummy_4x3.webp",
+      "title": "Distant Hill",
+      "description": "中央の仕切り壁内側に展示する風景作品のダミーです。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-06",
+      "location": "Landscape Room",
+      "color": "#a1b58e",
+      "accent": "#e5efdb"
+    },
+    {
+      "src": "assets/img/dummy/dummy_16x9.webp",
+      "title": "Pale Coast",
+      "description": "中央の仕切り壁内側に展示する風景作品のダミーです。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-06",
+      "location": "Landscape Room",
+      "color": "#c8b4aa",
+      "accent": "#f2e5e0"
+    },
+    {
+      "src": "assets/img/dummy/dummy_4x3.webp",
+      "title": "Wind Plain",
+      "description": "中央の仕切り壁内側に展示する風景作品のダミーです。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-06",
+      "location": "Landscape Room",
+      "color": "#95a9b4",
+      "accent": "#dbe7ed"
+    },
+    {
+      "src": "assets/img/dummy/dummy_16x9.webp",
+      "title": "Silver Lake",
+      "description": "中央の仕切り壁外側に展示する風景作品のダミーです。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-06",
+      "location": "Landscape Room",
+      "color": "#9fb8c8",
+      "accent": "#e2edf4"
+    },
+    {
+      "src": "assets/img/dummy/dummy_4x3.webp",
+      "title": "Northern Sky",
+      "description": "中央の仕切り壁外側に展示する風景作品のダミーです。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-06",
+      "location": "Landscape Room",
+      "color": "#bac79b",
+      "accent": "#edf3dd"
+    },
+    {
+      "src": "assets/img/dummy/dummy_16x9.webp",
+      "title": "Quiet Dunes",
+      "description": "中央の仕切り壁外側に展示する風景作品のダミーです。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-06",
+      "location": "Landscape Room",
+      "color": "#c5b49d",
+      "accent": "#f0e6d8"
+    },
+    {
+      "src": "assets/img/dummy/dummy_4x3.webp",
+      "title": "Soft Current",
+      "description": "中央の仕切り壁外側に展示する風景作品のダミーです。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-06",
+      "location": "Landscape Room",
+      "color": "#8ea8b8",
+      "accent": "#d9e6ee"
+    },
+    {
+      "src": "assets/img/dummy/dummy_16x9.webp",
+      "title": "Morning Haze",
+      "description": "中央の仕切り壁外側に展示する風景作品のダミーです。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-06",
+      "location": "Landscape Room",
+      "color": "#b8c6d3",
+      "accent": "#ecf1f5"
+    }
+  ],
+  "placements": [
+    { "wx": -6, "wz": -15.87, "wy": 2.35, "angle": "back", "spotlight": true, "shadow": true },
+    { "wx": 0, "wz": -15.87, "wy": 2.35, "angle": "back", "spotlight": true, "shadow": true },
+    { "wx": 6, "wz": -15.87, "wy": 2.35, "angle": "back", "spotlight": true, "shadow": true },
+    { "wx": -11.87, "wz": -8, "wy": 2.35, "angle": "left", "spotlight": true, "shadow": false },
+    { "wx": -11.87, "wz": 0, "wy": 2.35, "angle": "left", "spotlight": true, "shadow": false },
+    { "wx": -11.87, "wz": 8, "wy": 2.35, "angle": "left", "spotlight": true, "shadow": false },
+    { "wx": 11.87, "wz": -8, "wy": 2.35, "angle": "right", "spotlight": true, "shadow": false },
+    { "wx": 11.87, "wz": 0, "wy": 2.35, "angle": "right", "spotlight": true, "shadow": false },
+    { "wx": 11.87, "wz": 8, "wy": 2.35, "angle": "right", "spotlight": true, "shadow": false },
+    { "wx": -3.87, "wz": -2, "wy": 2.35, "angle": "left", "spotlight": false, "shadow": false },
+    { "wx": -3.87, "wz": 2, "wy": 2.35, "angle": "left", "spotlight": false, "shadow": false },
+    { "wx": 3.87, "wz": -2, "wy": 2.35, "angle": "right", "spotlight": false, "shadow": false },
+    { "wx": 3.87, "wz": 2, "wy": 2.35, "angle": "right", "spotlight": false, "shadow": false },
+    { "wx": -4.13, "wz": -2, "wy": 2.35, "angle": "right", "spotlight": false, "shadow": false },
+    { "wx": -4.13, "wz": 2, "wy": 2.35, "angle": "right", "spotlight": false, "shadow": false },
+    { "wx": 4.13, "wz": -2, "wy": 2.35, "angle": "left", "spotlight": false, "shadow": false },
+    { "wx": 4.13, "wz": 2, "wy": 2.35, "angle": "left", "spotlight": false, "shadow": false }
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "photos": [
+    {
+      "src": "assets/img/gallery/gallery_img_01.webp",
+      "title": "夕暮れの港",
+      "description": "説明文をここに書きます。",
+      "camera": "SONY ILCE-7RM5",
+      "date": "2025-06-12",
+      "location": "Tokyo, Japan",
+      "color": "#e8641a",
+      "accent": "#f5a842"
+    },
+    {
+      "src": "assets/img/gallery/gallery_img_02.webp",
+      "title": "静かな回廊",
+      "description": "白い回廊の奥行きと静けさを想定したダミー作品です。",
+      "camera": "SONY ILCE-7RM5",
+      "date": "2023-10-15",
+      "location": "Tokyo, Japana",
+      "color": "#2c5f8a",
+      "accent": "#9fcde8"
+    },
+    {
+      "src": "assets/img/gallery/gallery_img_03.webp",
+      "title": "青の正午",
+      "description": "昼の光を切り取ったイメージのダミー作品です。",
+      "camera": "SONY ILCE-7RM5",
+      "date": "2025-12-21",
+      "location": "Tokyo, Japan",
+      "color": "#e87ca0",
+      "accent": "#f5d0de"
+    },
+    {
+      "src": "assets/img/dummy/dummy_3x4.webp",
+      "title": "Dummy Work 04",
+      "description": "左壁に追加するダミー作品です。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-04",
+      "location": "Left Wall",
+      "color": "#7e5a44",
+      "accent": "#d8c0a8"
+    },
+    {
+      "src": "assets/img/dummy/dummy_9x16.webp",
+      "title": "Dummy Work 05",
+      "description": "左壁に追加するダミー作品です。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-04",
+      "location": "Left Wall",
+      "color": "#4f6d7a",
+      "accent": "#c7d9df"
+    },
+    {
+      "src": "assets/img/dummy/dummy_1x1.webp",
+      "title": "Dummy Work 06",
+      "description": "左壁に追加するダミー作品です。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-04",
+      "location": "Left Wall",
+      "color": "#7c4f67",
+      "accent": "#dfbfd1"
+    },
+    {
+      "src": "assets/img/dummy/dummy_3x4.webp",
+      "title": "Dummy Work 07",
+      "description": "右壁に追加するダミー作品です。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-04",
+      "location": "Right Wall",
+      "color": "#556b2f",
+      "accent": "#ced9ac"
+    },
+    {
+      "src": "assets/img/dummy/dummy_9x16.webp",
+      "title": "Dummy Work 08",
+      "description": "右壁に追加するダミー作品です。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-04",
+      "location": "Right Wall",
+      "color": "#8b5e3c",
+      "accent": "#e0c7ae"
+    },
+    {
+      "src": "assets/img/dummy/dummy_1x1.webp",
+      "title": "Dummy Work 09",
+      "description": "右壁に追加するダミー作品です。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-04",
+      "location": "Right Wall",
+      "color": "#3f5f8c",
+      "accent": "#b7cee8"
+    },
+    {
+      "src": "assets/img/dummy/dummy_3x4.webp",
+      "title": "Dummy Work 10",
+      "description": "中央の仕切り壁内側に追加するダミー作品です。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-04",
+      "location": "Center Divider",
+      "color": "#7d6a9e",
+      "accent": "#d5ccea"
+    },
+    {
+      "src": "assets/img/dummy/dummy_9x16.webp",
+      "title": "Dummy Work 11",
+      "description": "中央の仕切り壁内側に追加するダミー作品です。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-04",
+      "location": "Center Divider",
+      "color": "#6f7f54",
+      "accent": "#d6dfbf"
+    },
+    {
+      "src": "assets/img/dummy/dummy_1x1.webp",
+      "title": "Dummy Work 12",
+      "description": "中央の仕切り壁内側に追加するダミー作品です。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-04",
+      "location": "Center Divider",
+      "color": "#8b4c58",
+      "accent": "#e4c4ca"
+    },
+    {
+      "src": "assets/img/dummy/dummy_3x4.webp",
+      "title": "Dummy Work 13",
+      "description": "中央の仕切り壁内側に追加するダミー作品です。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-04",
+      "location": "Center Divider",
+      "color": "#4e7688",
+      "accent": "#c0dde8"
+    },
+    {
+      "src": "assets/img/dummy/dummy_9x16.webp",
+      "title": "Dummy Work 14",
+      "description": "中央の仕切り壁外側に追加するダミー作品です。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-04",
+      "location": "Center Divider Outer",
+      "color": "#74624e",
+      "accent": "#d8cab7"
+    },
+    {
+      "src": "assets/img/dummy/dummy_1x1.webp",
+      "title": "Dummy Work 15",
+      "description": "中央の仕切り壁外側に追加するダミー作品です。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-04",
+      "location": "Center Divider Outer",
+      "color": "#5b6f84",
+      "accent": "#c3d6e8"
+    },
+    {
+      "src": "assets/img/dummy/dummy_3x4.webp",
+      "title": "Dummy Work 16",
+      "description": "中央の仕切り壁外側に追加するダミー作品です。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-04",
+      "location": "Center Divider Outer",
+      "color": "#7c5a6a",
+      "accent": "#e1c7d3"
+    },
+    {
+      "src": "assets/img/dummy/dummy_9x16.webp",
+      "title": "Dummy Work 17",
+      "description": "中央の仕切り壁外側に追加するダミー作品です。",
+      "camera": "Dummy Camera",
+      "date": "2026-04-04",
+      "location": "Center Divider Outer",
+      "color": "#5c7451",
+      "accent": "#d1e0bf"
+    }
+  ],
+  "placements": [
+    { "wx": -6, "wz": -15.87, "wy": 2.2, "angle": "back", "spotlight": true, "shadow": true },
+    { "wx": 0, "wz": -15.87, "wy": 2.2, "angle": "back", "spotlight": true, "shadow": true },
+    { "wx": 6, "wz": -15.87, "wy": 2.2, "angle": "back", "spotlight": true, "shadow": true },
+    { "wx": -11.87, "wz": -8, "wy": 2.2, "angle": "left", "spotlight": true, "shadow": false },
+    { "wx": -11.87, "wz": 0, "wy": 2.2, "angle": "left", "spotlight": true, "shadow": false },
+    { "wx": -11.87, "wz": 8, "wy": 2.2, "angle": "left", "spotlight": true, "shadow": false },
+    { "wx": 11.87, "wz": -8, "wy": 2.2, "angle": "right", "spotlight": true, "shadow": false },
+    { "wx": 11.87, "wz": 0, "wy": 2.2, "angle": "right", "spotlight": true, "shadow": false },
+    { "wx": 11.87, "wz": 8, "wy": 2.2, "angle": "right", "spotlight": true, "shadow": false },
+    { "wx": -3.87, "wz": -2, "wy": 2.2, "angle": "left", "spotlight": false, "shadow": false },
+    { "wx": -3.87, "wz": 2, "wy": 2.2, "angle": "left", "spotlight": false, "shadow": false },
+    { "wx": 3.87, "wz": -2, "wy": 2.2, "angle": "right", "spotlight": false, "shadow": false },
+    { "wx": 3.87, "wz": 2, "wy": 2.2, "angle": "right", "spotlight": false, "shadow": false },
+    { "wx": -4.13, "wz": -2, "wy": 2.2, "angle": "right", "spotlight": false, "shadow": false },
+    { "wx": -4.13, "wz": 2, "wy": 2.2, "angle": "right", "spotlight": false, "shadow": false },
+    { "wx": 4.13, "wz": -2, "wy": 2.2, "angle": "left", "spotlight": false, "shadow": false },
+    { "wx": 4.13, "wz": 2, "wy": 2.2, "angle": "left", "spotlight": false, "shadow": false }
+  ]
+}
