@@ -548,13 +548,31 @@
       },
     ];
 
-    const ROOM_W = 24;
+    const ROOM_W = 44;
     const ROOM_H = 5;
-    const ROOM_D = 32;
+    const ROOM_D = 44;
     const MOVEMENT_SETTINGS = {
       walkSpeed: 0.14,
       rotationSpeed: 0.003,
       joystickSensitivity: 0.55,
+    };
+    const PORTAL_CONFIG = {
+      targetHref: "gallery-landscape.html",
+      previewDataUrl: "assets/data/gallery-landscape.json",
+      label: "LANDSCAPE ROOM",
+      subtitle: "Click to enter",
+      base: "#e7ecef",
+      accent: "#c4d6e3",
+      frame: "#f6f1e7",
+      line: "#c3d2dd",
+      text: "#4f6170",
+    };
+    const SPATIAL_LAYOUT = {
+      centerHalf: 6.2,
+      corridorHalf: 3.4,
+      corridorLength: 3.2,
+      roomHalfW: 6,
+      roomHalfD: 6,
     };
 
     const DEFAULT_WALL_PLACEMENTS = [
@@ -604,7 +622,7 @@
     scene.fog = new THREE.Fog(0x1a1008, 20, 60);
 
     const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.set(0, 1.9, ROOM_D / 2 - 2);
+    camera.position.set(0, 1.9, 4.8);
     camera.rotation.order = "YXZ";
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -619,6 +637,8 @@
     const pointer = new THREE.Vector2();
     const keys = Object.create(null);
     const photoMeshes = [];
+    const portalMeshes = [];
+    let portalOrb = null;
 
     let yaw = 0;
     let pitch = 0;
@@ -837,6 +857,168 @@
       };
     }
 
+    function drawCoverImage(ctx, image, x, y, width, height) {
+      const imageAspect = image.width / image.height;
+      const frameAspect = width / height;
+      let drawWidth = width;
+      let drawHeight = height;
+      let offsetX = x;
+      let offsetY = y;
+
+      if (imageAspect > frameAspect) {
+        drawWidth = height * imageAspect;
+        drawHeight = height;
+        offsetX = x - (drawWidth - width) / 2;
+      } else {
+        drawWidth = width;
+        drawHeight = width / imageAspect;
+        offsetY = y - (drawHeight - height) / 2;
+      }
+
+      ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
+    }
+
+    function loadPortalPreviewImage(src) {
+      return new Promise((resolve) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = () => resolve(null);
+        image.src = src;
+      });
+    }
+
+    async function loadPortalPreviewImages(dataUrl, count) {
+      try {
+        const response = await fetch(dataUrl, { cache: "no-cache" });
+        if (!response.ok) {
+          throw new Error("Failed to load preview gallery data");
+        }
+        const data = await response.json();
+        const sources = (Array.isArray(data.photos) ? data.photos : [])
+          .map((photo) => photo.src)
+          .filter(Boolean)
+          .slice(0, count);
+        const images = await Promise.all(sources.map((src) => loadPortalPreviewImage(src)));
+        return images.filter(Boolean);
+      } catch (error) {
+        console.warn("Portal preview images could not be loaded", error);
+        return [];
+      }
+    }
+
+    function createPortalPreviewTexture(config) {
+      const c = document.createElement("canvas");
+      c.width = 1024;
+      c.height = 512;
+      const ctx = c.getContext("2d");
+
+      const frameGroups = [
+        [52, 128, 204],
+        [308, 384, 460],
+        [564, 640, 716],
+        [820, 896, 972],
+      ];
+      const frames = [];
+      frameGroups.forEach((group) => {
+        group.forEach((x, index) => {
+          frames.push({ x, y: 212 + (index % 2) * 10, w: 54, h: 74 });
+        });
+      });
+
+      function drawPreview(images) {
+        const bg = ctx.createLinearGradient(0, 0, c.width, c.height);
+        bg.addColorStop(0, config.base);
+        bg.addColorStop(1, "#f8fafb");
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, c.width, c.height);
+
+        const ceiling = ctx.createLinearGradient(0, 0, 0, 170);
+        ceiling.addColorStop(0, "#fbfcfd");
+        ceiling.addColorStop(1, "#eef2f5");
+        ctx.fillStyle = ceiling;
+        ctx.fillRect(0, 0, c.width, 168);
+
+        ctx.fillStyle = "#f8fbfd";
+        ctx.fillRect(0, 168, c.width, 184);
+
+        const floor = ctx.createLinearGradient(0, 352, 0, 512);
+        floor.addColorStop(0, "#d7e0e6");
+        floor.addColorStop(1, "#c1cfd8");
+        ctx.fillStyle = floor;
+        ctx.fillRect(0, 352, c.width, 160);
+
+        ctx.strokeStyle = "rgba(173, 192, 205, 0.48)";
+        ctx.lineWidth = 1;
+        for (let x = 0; x <= c.width; x += 42) {
+          ctx.beginPath();
+          ctx.moveTo(x, 352);
+          ctx.lineTo(x + 28, 512);
+          ctx.stroke();
+        }
+        for (let y = 362; y <= 512; y += 20) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(c.width, y);
+          ctx.stroke();
+        }
+
+        ctx.fillStyle = "rgba(255,255,255,0.82)";
+        [126, 382, 638, 894].forEach((x) => {
+          ctx.fillRect(x - 46, 168, 92, 26);
+        });
+        [254, 510, 766, 1000].forEach((x) => {
+          ctx.fillRect(x - 13, 220, 26, 92);
+        });
+
+        frames.forEach((frame, frameIndex) => {
+          ctx.fillStyle = "rgba(0,0,0,0.14)";
+          ctx.fillRect(frame.x + 5, frame.y + 6, frame.w, frame.h);
+          ctx.fillStyle = config.frame;
+          ctx.fillRect(frame.x, frame.y, frame.w, frame.h);
+          const innerX = frame.x + 8;
+          const innerY = frame.y + 8;
+          const innerW = frame.w - 16;
+          const innerH = frame.h - 16;
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(innerX, innerY, innerW, innerH);
+          ctx.clip();
+          if (images[frameIndex]) {
+            drawCoverImage(ctx, images[frameIndex], innerX, innerY, innerW, innerH);
+          } else {
+            const art = ctx.createLinearGradient(frame.x, frame.y, frame.x + frame.w, frame.y + frame.h);
+            art.addColorStop(0, frameIndex % 2 === 0 ? "#dceaf3" : "#efe2ea");
+            art.addColorStop(1, "#ffffff");
+            ctx.fillStyle = art;
+            ctx.fillRect(innerX, innerY, innerW, innerH);
+          }
+          ctx.restore();
+        });
+
+        const portalGlow = ctx.createRadialGradient(512, 258, 12, 512, 258, 74);
+        portalGlow.addColorStop(0, "rgba(120, 158, 227, 0.98)");
+        portalGlow.addColorStop(0.55, "rgba(132, 170, 236, 0.46)");
+        portalGlow.addColorStop(1, "rgba(132, 170, 236, 0)");
+        ctx.fillStyle = portalGlow;
+        ctx.beginPath();
+        ctx.arc(512, 258, 74, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      drawPreview([]);
+
+      const texture = new THREE.CanvasTexture(c);
+      texture.encoding = THREE.sRGBEncoding;
+      loadPortalPreviewImages(config.previewDataUrl, frames.length).then((images) => {
+        if (!images.length) {
+          return;
+        }
+        drawPreview(images);
+        texture.needsUpdate = true;
+      });
+      return texture;
+    }
+
     function loadArtworkTexture(photo, index) {
       if (!photo.src) {
         return Promise.resolve(createGeneratedArtworkTexture(photo, index));
@@ -872,22 +1054,167 @@
     // ============================================================
     //  Room Geometry
     // ============================================================
-    const dividerBoxes = [
-      { x: -4, y: ROOM_H / 2, z: 0, w: 0.2, h: ROOM_H, d: 8 },
-      { x: 4, y: ROOM_H / 2, z: 0, w: 0.2, h: ROOM_H, d: 8 },
-    ];
-    const ropeBarrierBounds = [
-      { minX: -8.8, maxX: 8.8, minZ: -13.05, maxZ: -12.25 },
+    const WALL_THICKNESS = 0.2;
+    const {
+      centerHalf,
+      corridorHalf,
+      corridorLength,
+      roomHalfW,
+      roomHalfD,
+    } = SPATIAL_LAYOUT;
+    const northRoomCenterZ = -(centerHalf + corridorLength + roomHalfD);
+    const southRoomCenterZ = centerHalf + corridorLength + roomHalfD;
+    const westRoomCenterX = -(centerHalf + corridorLength + roomHalfW);
+    const eastRoomCenterX = centerHalf + corridorLength + roomHalfW;
+
+    const allowedZones = [
+      { minX: -centerHalf, maxX: centerHalf, minZ: -centerHalf, maxZ: centerHalf },
+      { minX: -corridorHalf, maxX: corridorHalf, minZ: -(centerHalf + corridorLength), maxZ: -centerHalf },
+      { minX: -roomHalfW, maxX: roomHalfW, minZ: northRoomCenterZ - roomHalfD, maxZ: northRoomCenterZ + roomHalfD },
+      { minX: -corridorHalf, maxX: corridorHalf, minZ: centerHalf, maxZ: centerHalf + corridorLength },
+      { minX: -roomHalfW, maxX: roomHalfW, minZ: southRoomCenterZ - roomHalfD, maxZ: southRoomCenterZ + roomHalfD },
+      { minX: -(centerHalf + corridorLength), maxX: -centerHalf, minZ: -corridorHalf, maxZ: corridorHalf },
+      { minX: westRoomCenterX - roomHalfW, maxX: westRoomCenterX + roomHalfW, minZ: -roomHalfD, maxZ: roomHalfD },
+      { minX: centerHalf, maxX: centerHalf + corridorLength, minZ: -corridorHalf, maxZ: corridorHalf },
+      { minX: eastRoomCenterX - roomHalfW, maxX: eastRoomCenterX + roomHalfW, minZ: -roomHalfD, maxZ: roomHalfD },
     ];
 
-    const dividerBounds = dividerBoxes.map((wall) => ({
-      minX: wall.x - wall.w / 2 - 0.8,
-      maxX: wall.x + wall.w / 2 + 0.8,
-      minZ: wall.z - wall.d / 2 - 0.8,
-      maxZ: wall.z + wall.d / 2 + 0.8,
+    const CORRIDOR_CEILING_Y = ROOM_H - 1.35;
+    const floorSections = allowedZones.map((zone, index) => ({
+      x: (zone.minX + zone.maxX) / 2,
+      z: (zone.minZ + zone.maxZ) / 2,
+      w: zone.maxX - zone.minX,
+      d: zone.maxZ - zone.minZ,
+      isCorridor: [1, 3, 5, 7].includes(index),
+      ceilingY: [1, 3, 5, 7].includes(index) ? CORRIDOR_CEILING_Y : ROOM_H,
     }));
 
+    const wallSegments = [];
+    const soffitSegments = [];
+    function addHorizontalWall(x1, x2, z) {
+      wallSegments.push({
+        x: (x1 + x2) / 2,
+        y: ROOM_H / 2,
+        z,
+        w: Math.abs(x2 - x1),
+        h: ROOM_H,
+        d: WALL_THICKNESS,
+      });
+    }
+
+    function addVerticalWall(x, z1, z2) {
+      wallSegments.push({
+        x,
+        y: ROOM_H / 2,
+        z: (z1 + z2) / 2,
+        w: WALL_THICKNESS,
+        h: ROOM_H,
+        d: Math.abs(z2 - z1),
+      });
+    }
+
+    function addHorizontalSoffit(x1, x2, z) {
+      soffitSegments.push({
+        x: (x1 + x2) / 2,
+        y: (ROOM_H + CORRIDOR_CEILING_Y) / 2,
+        z,
+        w: Math.abs(x2 - x1),
+        h: ROOM_H - CORRIDOR_CEILING_Y,
+        d: WALL_THICKNESS,
+      });
+    }
+
+    function addVerticalSoffit(x, z1, z2) {
+      soffitSegments.push({
+        x,
+        y: (ROOM_H + CORRIDOR_CEILING_Y) / 2,
+        z: (z1 + z2) / 2,
+        w: WALL_THICKNESS,
+        h: ROOM_H - CORRIDOR_CEILING_Y,
+        d: Math.abs(z2 - z1),
+      });
+    }
+
+    addHorizontalWall(-centerHalf, -corridorHalf, -centerHalf);
+    addHorizontalWall(corridorHalf, centerHalf, -centerHalf);
+    addHorizontalWall(-centerHalf, -corridorHalf, centerHalf);
+    addHorizontalWall(corridorHalf, centerHalf, centerHalf);
+    addVerticalWall(-centerHalf, -centerHalf, -corridorHalf);
+    addVerticalWall(-centerHalf, corridorHalf, centerHalf);
+    addVerticalWall(centerHalf, -centerHalf, -corridorHalf);
+    addVerticalWall(centerHalf, corridorHalf, centerHalf);
+
+    addVerticalWall(-corridorHalf, -(centerHalf + corridorLength), -centerHalf);
+    addVerticalWall(corridorHalf, -(centerHalf + corridorLength), -centerHalf);
+    addHorizontalWall(-roomHalfW, -corridorHalf, northRoomCenterZ + roomHalfD);
+    addHorizontalWall(corridorHalf, roomHalfW, northRoomCenterZ + roomHalfD);
+    addHorizontalWall(-roomHalfW, roomHalfW, northRoomCenterZ - roomHalfD);
+    addVerticalWall(-roomHalfW, northRoomCenterZ - roomHalfD, northRoomCenterZ + roomHalfD);
+    addVerticalWall(roomHalfW, northRoomCenterZ - roomHalfD, northRoomCenterZ + roomHalfD);
+
+    addVerticalWall(-corridorHalf, centerHalf, centerHalf + corridorLength);
+    addVerticalWall(corridorHalf, centerHalf, centerHalf + corridorLength);
+    addHorizontalWall(-roomHalfW, -corridorHalf, southRoomCenterZ - roomHalfD);
+    addHorizontalWall(corridorHalf, roomHalfW, southRoomCenterZ - roomHalfD);
+    addHorizontalWall(-roomHalfW, roomHalfW, southRoomCenterZ + roomHalfD);
+    addVerticalWall(-roomHalfW, southRoomCenterZ - roomHalfD, southRoomCenterZ + roomHalfD);
+    addVerticalWall(roomHalfW, southRoomCenterZ - roomHalfD, southRoomCenterZ + roomHalfD);
+
+    addHorizontalWall(-(centerHalf + corridorLength), -centerHalf, -corridorHalf);
+    addHorizontalWall(-(centerHalf + corridorLength), -centerHalf, corridorHalf);
+    addVerticalWall(westRoomCenterX - roomHalfW, -roomHalfD, roomHalfD);
+    addHorizontalWall(westRoomCenterX - roomHalfW, westRoomCenterX + roomHalfW, -roomHalfD);
+    addHorizontalWall(westRoomCenterX - roomHalfW, westRoomCenterX + roomHalfW, roomHalfD);
+    addVerticalWall(westRoomCenterX + roomHalfW, -roomHalfD, -corridorHalf);
+    addVerticalWall(westRoomCenterX + roomHalfW, corridorHalf, roomHalfD);
+
+    addHorizontalWall(centerHalf, centerHalf + corridorLength, -corridorHalf);
+    addHorizontalWall(centerHalf, centerHalf + corridorLength, corridorHalf);
+    addVerticalWall(eastRoomCenterX + roomHalfW, -roomHalfD, roomHalfD);
+    addHorizontalWall(eastRoomCenterX - roomHalfW, eastRoomCenterX + roomHalfW, -roomHalfD);
+    addHorizontalWall(eastRoomCenterX - roomHalfW, eastRoomCenterX + roomHalfW, roomHalfD);
+    addVerticalWall(eastRoomCenterX - roomHalfW, -roomHalfD, -corridorHalf);
+    addVerticalWall(eastRoomCenterX - roomHalfW, corridorHalf, roomHalfD);
+
+    addHorizontalSoffit(-corridorHalf, corridorHalf, -centerHalf);
+    addHorizontalSoffit(-corridorHalf, corridorHalf, centerHalf);
+    addVerticalSoffit(-centerHalf, -corridorHalf, corridorHalf);
+    addVerticalSoffit(centerHalf, -corridorHalf, corridorHalf);
+    addHorizontalSoffit(-corridorHalf, corridorHalf, northRoomCenterZ + roomHalfD);
+    addHorizontalSoffit(-corridorHalf, corridorHalf, southRoomCenterZ - roomHalfD);
+    addVerticalSoffit(westRoomCenterX + roomHalfW, -corridorHalf, corridorHalf);
+    addVerticalSoffit(eastRoomCenterX - roomHalfW, -corridorHalf, corridorHalf);
+
     function buildRoom() {
+      function addRoomNameLabel(text, x, y, z, rotationY) {
+        const labelCanvas = document.createElement("canvas");
+        labelCanvas.width = 768;
+        labelCanvas.height = 160;
+        const ctx = labelCanvas.getContext("2d");
+        ctx.clearRect(0, 0, labelCanvas.width, labelCanvas.height);
+        ctx.fillStyle = "rgba(246, 239, 226, 0.96)";
+        ctx.font = "600 54px Georgia, serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(text, labelCanvas.width / 2, labelCanvas.height / 2);
+
+        const texture = new THREE.CanvasTexture(labelCanvas);
+        texture.encoding = THREE.sRGBEncoding;
+
+        const label = new THREE.Mesh(
+          new THREE.PlaneGeometry(4.2, 0.9),
+          new THREE.MeshBasicMaterial({
+            map: texture,
+            transparent: true,
+            depthWrite: false,
+            side: THREE.DoubleSide,
+          })
+        );
+        label.position.set(x, y, z);
+        label.rotation.y = rotationY;
+        scene.add(label);
+      }
+
       const floorTexture = createFloorTexture();
       const wallTexture = createWallTexture();
       const wallMaterial = new THREE.MeshStandardMaterial({
@@ -907,121 +1234,61 @@
         metalness: 0.03,
       });
 
-      const floor = new THREE.Mesh(
-        new THREE.BoxGeometry(ROOM_W, 0.1, ROOM_D),
-        new THREE.MeshStandardMaterial({
-          color: 0x2a1f10,
-          map: floorTexture,
-          roughness: 0.75,
-          metalness: 0.03,
-        })
-      );
-      floor.position.y = -0.05;
-      floor.receiveShadow = true;
-      scene.add(floor);
+      floorSections.forEach((section) => {
+        const floor = new THREE.Mesh(
+          new THREE.BoxGeometry(section.w, 0.1, section.d),
+          new THREE.MeshStandardMaterial({
+            color: 0x2a1f10,
+            map: floorTexture,
+            roughness: 0.75,
+            metalness: 0.03,
+          })
+        );
+        floor.position.set(section.x, -0.05, section.z);
+        floor.receiveShadow = true;
+        scene.add(floor);
 
-      const ceiling = new THREE.Mesh(
-        new THREE.BoxGeometry(ROOM_W, 0.1, ROOM_D),
-        ceilingMaterial
-      );
-      ceiling.position.y = ROOM_H;
-      scene.add(ceiling);
+        const ceiling = new THREE.Mesh(
+          new THREE.BoxGeometry(section.w, 0.1, section.d),
+          ceilingMaterial
+        );
+        ceiling.position.set(section.x, section.ceilingY, section.z);
+        scene.add(ceiling);
+      });
 
-      const outerWalls = [
-        { x: 0, y: ROOM_H / 2, z: -ROOM_D / 2, w: ROOM_W, h: ROOM_H, d: 0.2 },
-        { x: 0, y: ROOM_H / 2, z: ROOM_D / 2, w: ROOM_W, h: ROOM_H, d: 0.2 },
-        { x: -ROOM_W / 2, y: ROOM_H / 2, z: 0, w: 0.2, h: ROOM_H, d: ROOM_D },
-        { x: ROOM_W / 2, y: ROOM_H / 2, z: 0, w: 0.2, h: ROOM_H, d: ROOM_D },
-      ];
-
-      outerWalls.concat(dividerBoxes).forEach((wall) => {
+      wallSegments.forEach((wall) => {
         const mesh = new THREE.Mesh(
           new THREE.BoxGeometry(wall.w, wall.h, wall.d),
           wallMaterial
         );
         mesh.position.set(wall.x, wall.y, wall.z);
-        mesh.castShadow = true;
+        mesh.castShadow = false;
         mesh.receiveShadow = true;
         scene.add(mesh);
       });
 
-
-      const barrierPostMaterial = new THREE.MeshStandardMaterial({
-        color: 0xc0a060,
-        roughness: 0.38,
-        metalness: 0.22,
+      soffitSegments.forEach((wall) => {
+        const mesh = new THREE.Mesh(
+          new THREE.BoxGeometry(wall.w, wall.h, wall.d),
+          wallMaterial
+        );
+        mesh.position.set(wall.x, wall.y, wall.z);
+        mesh.castShadow = false;
+        mesh.receiveShadow = true;
+        scene.add(mesh);
       });
 
-      const barrierPoleMaterial = new THREE.MeshStandardMaterial({
-        color: 0x050505,
-        roughness: 0.72,
-        metalness: 0.03,
-      });
+      const labelY = (ROOM_H + CORRIDOR_CEILING_Y) / 2;
+      const labelOffset = 0.16;
+      addRoomNameLabel("NORTH ROOM", 0, labelY, -centerHalf + labelOffset, 0);
+      addRoomNameLabel("SOUTH ROOM", 0, labelY, centerHalf - labelOffset, Math.PI);
+      addRoomNameLabel("WEST ROOM", -centerHalf + labelOffset, labelY, 0, Math.PI / 2);
+      addRoomNameLabel("EAST ROOM", centerHalf - labelOffset, labelY, 0, -Math.PI / 2);
 
-      const ropeTexture = createRopeTexture();
-
-      const barrierRopeMaterial = new THREE.MeshStandardMaterial({
-        color: 0xc82323,
-        map: ropeTexture,
-        roughness: 0.95,
-        metalness: 0.02,
-      });
-
-      const barrierPostXs = [-8.8, -6.6, -4.4, -2.2, 0, 2.2, 4.4, 6.6, 8.8];
-
-      barrierPostXs.forEach((x) => {
-        const base = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.13, 0.17, 0.06, 20),
-          barrierPostMaterial
-        );
-        base.position.set(x, 0.03, -12.65);
-        base.castShadow = true;
-        base.receiveShadow = true;
-        scene.add(base);
-
-        const post = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.055, 0.065, 0.86, 20),
-          barrierPoleMaterial
-        );
-        post.position.set(x, 0.46, -12.65);
-        post.castShadow = true;
-        post.receiveShadow = true;
-        scene.add(post);
-
-        const collar = new THREE.Mesh(
-          new THREE.TorusGeometry(0.08, 0.015, 12, 20),
-          barrierPostMaterial
-        );
-        collar.rotation.x = Math.PI / 2;
-        collar.position.set(x, 0.84, -12.65);
-        scene.add(collar);
-
-        const cap = new THREE.Mesh(
-          new THREE.SphereGeometry(0.082, 18, 18),
-          barrierPostMaterial
-        );
-        cap.position.set(x, 0.95, -12.65);
-        cap.castShadow = true;
-        scene.add(cap);
-      });
-
-      for (let i = 0; i < barrierPostXs.length - 1; i += 1) {
-        const startX = barrierPostXs[i];
-        const endX = barrierPostXs[i + 1];
-        const centerX = (startX + endX) / 2;
-
-        const topCurve = new THREE.CatmullRomCurve3([
-          new THREE.Vector3(startX, 0.83, -12.65),
-          new THREE.Vector3(centerX, 0.58, -12.65),
-          new THREE.Vector3(endX, 0.83, -12.65),
-        ]);
-        const topRope = new THREE.Mesh(
-          new THREE.TubeGeometry(topCurve, 48, 0.038, 10, false),
-          barrierRopeMaterial
-        );
-        topRope.castShadow = true;
-        scene.add(topRope);
-      }
+      addRoomNameLabel("CENTER ROOM", 0, labelY, northRoomCenterZ + roomHalfD - labelOffset, Math.PI);
+      addRoomNameLabel("CENTER ROOM", 0, labelY, southRoomCenterZ - roomHalfD + labelOffset, 0);
+      addRoomNameLabel("CENTER ROOM", westRoomCenterX + roomHalfW - labelOffset, labelY, 0, -Math.PI / 2);
+      addRoomNameLabel("CENTER ROOM", eastRoomCenterX - roomHalfW + labelOffset, labelY, 0, Math.PI / 2);
 
     }
 
@@ -1029,36 +1296,46 @@
     //  Lighting
     // ============================================================
     function addLights() {
-      scene.add(new THREE.AmbientLight(0x3d2b10, 1.2));
+      scene.add(new THREE.AmbientLight(0x6a5337, 1.9));
+      scene.add(new THREE.HemisphereLight(0xa88c62, 0x120d08, 0.55));
+    }
 
-      [
-        [-6, ROOM_D / 2 - 4],
-        [0, ROOM_D / 2 - 4],
-        [6, ROOM_D / 2 - 4],
-        [-6, 4],
-        [0, 4],
-        [6, 4],
-        [-6, -4],
-        [0, -4],
-        [6, -4],
-        [-6, -ROOM_D / 2 + 4],
-        [0, -ROOM_D / 2 + 4],
-        [6, -ROOM_D / 2 + 4],
-      ].forEach(([x, z]) => {
-        const spot = new THREE.SpotLight(0xfffde0, 1.2, 20, Math.PI / 5, 0.4);
-        spot.position.set(x, ROOM_H - 0.2, z);
-        spot.target.position.set(x, 0, z);
-        spot.castShadow = true;
-        scene.add(spot);
-        scene.add(spot.target);
+    function buildPortal() {
+      const portalGroup = new THREE.Group();
+      const previewTexture = createPortalPreviewTexture(PORTAL_CONFIG);
 
-        const fixture = new THREE.Mesh(
-          new THREE.BoxGeometry(0.3, 0.15, 0.3),
-          new THREE.MeshBasicMaterial({ color: 0xfffde0 })
-        );
-        fixture.position.set(x, ROOM_H - 0.1, z);
-        scene.add(fixture);
-      });
+      const orb = new THREE.Mesh(
+        new THREE.SphereGeometry(0.92, 48, 48),
+        new THREE.MeshStandardMaterial({
+          map: previewTexture,
+          color: 0xffffff,
+          roughness: 0.14,
+          metalness: 0.06,
+          transparent: true,
+          opacity: 0.96,
+          emissive: 0x151515,
+          emissiveIntensity: 0.08,
+        })
+      );
+      orb.castShadow = false;
+      orb.receiveShadow = true;
+      portalGroup.add(orb);
+      portalOrb = orb;
+
+      const hitArea = new THREE.Mesh(
+        new THREE.SphereGeometry(1.2, 24, 24),
+        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 })
+      );
+      hitArea.userData.portalTarget = PORTAL_CONFIG.targetHref;
+      portalGroup.add(hitArea);
+      portalMeshes.push(hitArea);
+
+      const glow = new THREE.PointLight(0xf6e5cf, 0.75, 8);
+      glow.position.set(0, 0.15, 0.55);
+      portalGroup.add(glow);
+
+      portalGroup.position.set(0, 0.95, 0);
+      scene.add(portalGroup);
     }
 
     // ============================================================
@@ -1085,7 +1362,7 @@
     function createArtwork(photo, placement, textureInfo, index) {
       const { fw, fh } = getFrameSize(textureInfo.aspectRatio);
       const group = new THREE.Group();
-      const wallOffset = 0.0;
+      const wallOffset = 0.055;
 
       const shadowPlane = new THREE.Mesh(
         new THREE.PlaneGeometry(fw + 0.5, fh + 0.5),
@@ -1107,7 +1384,7 @@
           metalness: 0.16,
         })
       );
-      frame.castShadow = true;
+      frame.castShadow = false;
       frame.receiveShadow = true;
       group.add(frame);
 
@@ -1168,12 +1445,7 @@
         const spot = new THREE.SpotLight(0xfff8ee, 2.0, 10, Math.PI / 7, 0.5);
         spot.position.set(placement.wx, ROOM_H - 0.15, placement.wz);
         spot.target.position.set(placement.wx, placement.wy, placement.wz);
-        spot.castShadow = placement.shadow === true;
-        if (placement.shadow === true) {
-          spot.shadow.mapSize.width = 1024;
-          spot.shadow.mapSize.height = 1024;
-          spot.shadow.bias = -0.00012;
-        }
+        spot.castShadow = false;
         scene.add(spot);
         scene.add(spot.target);
       }
@@ -1201,47 +1473,39 @@
     }
 
     function clampPosition(nextX, nextZ) {
-      let x = THREE.MathUtils.clamp(nextX, -ROOM_W / 2 + 0.8, ROOM_W / 2 - 0.8);
-      let z = THREE.MathUtils.clamp(nextZ, -ROOM_D / 2 + 0.8, ROOM_D / 2 - 0.8);
+      const edgeMargin = 0.28;
+      const candidateZones = [
+        { minX: -centerHalf, maxX: centerHalf, minZ: -centerHalf, maxZ: centerHalf },
+        { minX: -corridorHalf + edgeMargin, maxX: corridorHalf - edgeMargin, minZ: -(centerHalf + corridorLength), maxZ: -centerHalf },
+        { minX: -roomHalfW + edgeMargin, maxX: roomHalfW - edgeMargin, minZ: northRoomCenterZ - roomHalfD + edgeMargin, maxZ: northRoomCenterZ + roomHalfD },
+        { minX: -corridorHalf + edgeMargin, maxX: corridorHalf - edgeMargin, minZ: centerHalf, maxZ: centerHalf + corridorLength },
+        { minX: -roomHalfW + edgeMargin, maxX: roomHalfW - edgeMargin, minZ: southRoomCenterZ - roomHalfD, maxZ: southRoomCenterZ + roomHalfD - edgeMargin },
+        { minX: -(centerHalf + corridorLength), maxX: -centerHalf, minZ: -corridorHalf + edgeMargin, maxZ: corridorHalf - edgeMargin },
+        { minX: westRoomCenterX - roomHalfW + edgeMargin, maxX: westRoomCenterX + roomHalfW, minZ: -roomHalfD + edgeMargin, maxZ: roomHalfD - edgeMargin },
+        { minX: centerHalf, maxX: centerHalf + corridorLength, minZ: -corridorHalf + edgeMargin, maxZ: corridorHalf - edgeMargin },
+        { minX: eastRoomCenterX - roomHalfW, maxX: eastRoomCenterX + roomHalfW - edgeMargin, minZ: -roomHalfD + edgeMargin, maxZ: roomHalfD - edgeMargin },
+      ];
 
-      dividerBounds.forEach((bound) => {
-        if (x > bound.minX && x < bound.maxX && z > bound.minZ && z < bound.maxZ) {
-          const distances = [
-            { axis: "x", value: Math.abs(x - bound.minX), target: bound.minX },
-            { axis: "x", value: Math.abs(x - bound.maxX), target: bound.maxX },
-            { axis: "z", value: Math.abs(z - bound.minZ), target: bound.minZ },
-            { axis: "z", value: Math.abs(z - bound.maxZ), target: bound.maxZ },
-          ].sort((a, b) => a.value - b.value);
+      for (const zone of candidateZones) {
+        if (nextX >= zone.minX && nextX <= zone.maxX && nextZ >= zone.minZ && nextZ <= zone.maxZ) {
+          return { x: nextX, z: nextZ };
+        }
+      }
 
-          if (distances[0].axis === "x") {
-            x = distances[0].target;
-          } else {
-            z = distances[0].target;
-          }
+      let best = null;
+      candidateZones.forEach((zone) => {
+        const x = THREE.MathUtils.clamp(nextX, zone.minX, zone.maxX);
+        const z = THREE.MathUtils.clamp(nextZ, zone.minZ, zone.maxZ);
+        const distance = (nextX - x) ** 2 + (nextZ - z) ** 2;
+        if (!best || distance < best.distance) {
+          best = { x, z, distance };
         }
       });
 
-      ropeBarrierBounds.forEach((bound) => {
-        if (x > bound.minX && x < bound.maxX && z > bound.minZ && z < bound.maxZ) {
-          const distances = [
-            { axis: "x", value: Math.abs(x - bound.minX), target: bound.minX },
-            { axis: "x", value: Math.abs(x - bound.maxX), target: bound.maxX },
-            { axis: "z", value: Math.abs(z - bound.minZ), target: bound.minZ },
-            { axis: "z", value: Math.abs(z - bound.maxZ), target: bound.maxZ },
-          ].sort((a, b) => a.value - b.value);
-
-          if (distances[0].axis === "x") {
-            x = distances[0].target;
-          } else {
-            z = distances[0].target;
-          }
-        }
-      });
-
-      return { x, z };
+      return best ? { x: best.x, z: best.z } : { x: 0, z: 0 };
     }
 
-    function updateMovement() {
+    function updateMovement(delta) {
       const keyForward = (keys.KeyW || keys.ArrowUp ? 1 : 0) - (keys.KeyS || keys.ArrowDown ? 1 : 0);
       const keyStrafe = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0);
       const moveForward = keyForward + (-joystickY * MOVEMENT_SETTINGS.joystickSensitivity);
@@ -1250,7 +1514,7 @@
         return;
       }
 
-      const speed = MOVEMENT_SETTINGS.walkSpeed;
+      const speed = MOVEMENT_SETTINGS.walkSpeed * delta * 60;
       const forward = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
       const right = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw));
       const move = new THREE.Vector3();
@@ -1409,6 +1673,11 @@
         const hits = raycaster.intersectObjects(photoMeshes, false);
         if (hits.length > 0) {
           openOverlay(hits[0].object.userData.photoData);
+          return;
+        }
+        const portalHits = raycaster.intersectObjects(portalMeshes, false);
+        if (portalHits.length > 0) {
+          window.location.href = portalHits[0].object.userData.portalTarget;
         }
       }
     }
@@ -1439,11 +1708,16 @@
     // ============================================================
     //  Animation Loop
     // ============================================================
+    const PORTAL_ROTATION_SPEED = 0.24;
+
     function animate() {
       requestAnimationFrame(animate);
-      clock.getDelta();
-      updateMovement();
+      const delta = clock.getDelta();
+      updateMovement(delta);
       applyCameraRotation();
+      if (portalOrb) {
+        portalOrb.rotation.y += PORTAL_ROTATION_SPEED * delta;
+      }
       renderer.render(scene, camera);
     }
 
@@ -1511,6 +1785,7 @@
       await loadGalleryData();
       buildRoom();
       addLights();
+      buildPortal();
       bindEvents();
       await buildArtworks();
       animate();
