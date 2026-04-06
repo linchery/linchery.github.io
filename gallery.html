@@ -44,39 +44,83 @@
       height: 100%;
     }
 
-    #hud {
+    #settings-toggle {
       position: absolute;
-      top: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-      padding: 7px 20px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.82);
-      color: #333;
-      font-size: 13px;
-      line-height: 1.5;
-      white-space: nowrap;
-      pointer-events: none;
-      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
-      border: 1px solid rgba(0, 0, 0, 0.06);
+      bottom: 16px;
+      right: 16px;
+      z-index: 12;
+      padding: 0.7rem 1rem;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.86);
+      color: #4a443d;
+      font-size: 0.82rem;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08);
       backdrop-filter: blur(8px);
     }
 
-    #status {
+    #movement-controls {
       position: absolute;
-      left: 16px;
-      bottom: 16px;
-      z-index: 10;
-      padding: 9px 12px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.82);
-      color: #555;
-      font-size: 12px;
-      pointer-events: none;
-      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.07);
+      bottom: 72px;
+      right: 16px;
+      z-index: 11;
+      width: min(260px, calc(100vw - 32px));
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.84);
+      color: #444;
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08);
       border: 1px solid rgba(0, 0, 0, 0.06);
       backdrop-filter: blur(8px);
+      display: none;
+    }
+
+    #movement-controls.is-open {
+      display: block;
+    }
+
+    .movement-controls-title {
+      margin: 0 0 0.6rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      color: #6f665d;
+    }
+
+    .movement-help {
+      margin: 0 0 0.9rem;
+      color: #666056;
+      font-size: 0.8rem;
+      line-height: 1.7;
+    }
+
+    .movement-control {
+      display: grid;
+      gap: 0.3rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .movement-control:last-child {
+      margin-bottom: 0;
+    }
+
+    .movement-control.is-hidden {
+      display: none;
+    }
+
+    .movement-control-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.82rem;
+      color: #50483f;
+    }
+
+    .movement-control input[type="range"] {
+      width: 100%;
+      accent-color: #8b7c6f;
     }
 
     #joystick {
@@ -159,14 +203,15 @@
     }
 
     .overlay-image {
-      width: 100%;
-      max-width: 100%;
+      width: auto;
+      max-width: min(80vw, 100%);
       max-height: 72vh;
       height: auto;
       display: block;
       border-radius: 0;
       box-shadow: none;
       background: #f3f3f3;
+      object-fit: contain;
     }
 
     .overlay-title {
@@ -212,20 +257,20 @@
     }
 
     @media (max-width: 767px) {
-      #hud {
-        top: 12px;
-        width: calc(100vw - 110px);
-        white-space: normal;
+      #settings-toggle {
+        bottom: 12px;
+        right: 12px;
       }
 
-      #status {
-        left: 12px;
-        bottom: 12px;
+      #movement-controls {
+        right: 12px;
+        bottom: 60px;
+        width: min(240px, calc(100vw - 24px));
       }
 
       #joystick {
         left: 12px;
-        bottom: 68px;
+        bottom: 148px;
         width: 104px;
         height: 104px;
       }
@@ -252,8 +297,36 @@
 </head>
 <body data-page="gallery" data-page-title="Gallery">
   <div data-site-menu></div>
-  <div id="hud">WASD / 矢印キー で移動 ｜ マウスドラッグ で視点回転 ｜ 写真をクリックで詳細</div>
-  <div id="status">Initializing gallery...</div>
+  <button id="settings-toggle" type="button" aria-expanded="false" aria-controls="movement-controls">SETTINGS</button>
+    <div id="movement-controls" aria-label="Movement controls">
+    <p class="movement-controls-title">MOVEMENT</p>
+    <p class="movement-help" id="movementHelpText">
+      WASD / 矢印キーで移動<br>
+      マウスドラッグで視点回転<br>
+      写真をクリックで詳細表示
+    </p>
+    <div class="movement-control">
+      <div class="movement-control-row">
+        <span>Walk Speed</span>
+        <span id="walkSpeedValue">0.14</span>
+      </div>
+      <input id="walkSpeedInput" type="range" min="0.04" max="0.3" step="0.01" value="0.14" />
+    </div>
+    <div class="movement-control">
+      <div class="movement-control-row">
+        <span>Rotation Speed</span>
+        <span id="rotationSpeedValue">0.003</span>
+      </div>
+      <input id="rotationSpeedInput" type="range" min="0.001" max="0.01" step="0.001" value="0.003" />
+    </div>
+    <div class="movement-control" id="joystickSensitivityControl">
+      <div class="movement-control-row">
+        <span>Stick Sensitivity</span>
+        <span id="joystickSensitivityValue">0.55</span>
+      </div>
+      <input id="joystickSensitivityInput" type="range" min="0.2" max="1.2" step="0.05" value="0.55" />
+    </div>
+  </div>
   <div id="joystick" aria-hidden="true">
     <div class="joystick-ring"></div>
     <div class="joystick-knob" id="joystickKnob"></div>
@@ -422,6 +495,11 @@
     const ROOM_W = 24;
     const ROOM_H = 5;
     const ROOM_D = 32;
+    const MOVEMENT_SETTINGS = {
+      walkSpeed: 0.14,
+      rotationSpeed: 0.003,
+      joystickSensitivity: 0.55,
+    };
 
     const WALL_PLACEMENTS = [
       { wx: -6, wz: -15.87, wy: 2.2, angle: 0 },
@@ -443,8 +521,17 @@
     //  Scene / Renderer
     // ============================================================
     const canvas = document.getElementById("c");
-    const statusEl = document.getElementById("status");
     const overlayEl = document.getElementById("overlay");
+    const settingsToggleEl = document.getElementById("settings-toggle");
+    const movementControlsEl = document.getElementById("movement-controls");
+    const walkSpeedInputEl = document.getElementById("walkSpeedInput");
+    const rotationSpeedInputEl = document.getElementById("rotationSpeedInput");
+    const joystickSensitivityInputEl = document.getElementById("joystickSensitivityInput");
+    const walkSpeedValueEl = document.getElementById("walkSpeedValue");
+    const rotationSpeedValueEl = document.getElementById("rotationSpeedValue");
+    const joystickSensitivityValueEl = document.getElementById("joystickSensitivityValue");
+    const joystickSensitivityControlEl = document.getElementById("joystickSensitivityControl");
+    const movementHelpTextEl = document.getElementById("movementHelpText");
     const joystickEl = document.getElementById("joystick");
     const joystickKnobEl = document.getElementById("joystickKnob");
     const overlayImageEl = document.getElementById("overlayImage");
@@ -644,12 +731,18 @@
           photo.src,
           (texture) => {
             const image = texture.image;
+            const imageWidth = image
+              ? (image.naturalWidth || image.videoWidth || image.width || 0)
+              : 0;
+            const imageHeight = image
+              ? (image.naturalHeight || image.videoHeight || image.height || 0)
+              : 0;
             texture.encoding = THREE.sRGBEncoding;
             resolve({
               texture,
-              portrait: image && image.naturalHeight > image.naturalWidth,
-              aspectRatio: image && image.naturalWidth && image.naturalHeight
-                ? image.naturalWidth / image.naturalHeight
+              portrait: imageHeight > imageWidth,
+              aspectRatio: imageWidth > 0 && imageHeight > 0
+                ? imageWidth / imageHeight
                 : 3 / 2,
               src: photo.src,
             });
@@ -977,7 +1070,6 @@
         const textureInfo = await loadArtworkTexture(PHOTOS[i], i);
         createArtwork(PHOTOS[i], WALL_PLACEMENTS[i], textureInfo, i);
       }
-      statusEl.textContent = `${count} artworks loaded`;
     }
 
     // ============================================================
@@ -1037,14 +1129,13 @@
     function updateMovement() {
       const keyForward = (keys.KeyW || keys.ArrowUp ? 1 : 0) - (keys.KeyS || keys.ArrowDown ? 1 : 0);
       const keyStrafe = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0);
-      const joystickSensitivity = 0.55;
-      const moveForward = keyForward + (-joystickY * joystickSensitivity);
-      const moveStrafe = keyStrafe + (joystickX * joystickSensitivity);
+      const moveForward = keyForward + (-joystickY * MOVEMENT_SETTINGS.joystickSensitivity);
+      const moveStrafe = keyStrafe + (joystickX * MOVEMENT_SETTINGS.joystickSensitivity);
       if (!moveForward && !moveStrafe) {
         return;
       }
 
-      const speed = 0.14;
+      const speed = MOVEMENT_SETTINGS.walkSpeed;
       const forward = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
       const right = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw));
       const move = new THREE.Vector3();
@@ -1063,12 +1154,47 @@
       joystickKnobEl.style.transform = `translate(${joystickX * radius}px, ${joystickY * radius}px)`;
     }
 
+    function syncMovementControls() {
+      if (walkSpeedInputEl) {
+        walkSpeedInputEl.value = String(MOVEMENT_SETTINGS.walkSpeed);
+      }
+      if (rotationSpeedInputEl) {
+        rotationSpeedInputEl.value = String(MOVEMENT_SETTINGS.rotationSpeed);
+      }
+      if (joystickSensitivityInputEl) {
+        joystickSensitivityInputEl.value = String(MOVEMENT_SETTINGS.joystickSensitivity);
+      }
+      if (walkSpeedValueEl) {
+        walkSpeedValueEl.textContent = MOVEMENT_SETTINGS.walkSpeed.toFixed(2);
+      }
+      if (rotationSpeedValueEl) {
+        rotationSpeedValueEl.textContent = MOVEMENT_SETTINGS.rotationSpeed.toFixed(3);
+      }
+      if (joystickSensitivityValueEl) {
+        joystickSensitivityValueEl.textContent = MOVEMENT_SETTINGS.joystickSensitivity.toFixed(2);
+      }
+    }
+
     function updateJoystickVisibility() {
       const isTouchLike =
         window.matchMedia("(pointer: coarse)").matches ||
         navigator.maxTouchPoints > 0;
       const isTabletOrPhoneWidth = window.innerWidth <= 1024;
-      joystickEl.classList.toggle("is-visible", isTouchLike && isTabletOrPhoneWidth);
+      const showJoystick = isTouchLike && isTabletOrPhoneWidth;
+      joystickEl.classList.toggle("is-visible", showJoystick);
+      joystickSensitivityControlEl.classList.toggle("is-hidden", !showJoystick);
+      joystickSensitivityInputEl.disabled = !showJoystick;
+      movementHelpTextEl.innerHTML = showJoystick
+        ? "左下のスティックで移動<br>画面ドラッグで視点回転<br>写真をタップで詳細表示"
+        : "WASD / 矢印キーで移動<br>マウスドラッグで視点回転<br>写真をクリックで詳細表示";
+    }
+
+    function toggleSettings(forceOpen) {
+      const nextOpen = typeof forceOpen === "boolean"
+        ? forceOpen
+        : !movementControlsEl.classList.contains("is-open");
+      movementControlsEl.classList.toggle("is-open", nextOpen);
+      settingsToggleEl.setAttribute("aria-expanded", nextOpen ? "true" : "false");
     }
 
     function resetJoystick() {
@@ -1146,8 +1272,8 @@
       if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
         dragMoved = true;
       }
-      yaw -= dx * 0.003;
-      pitch = clampPitch(pitch - dy * 0.003);
+      yaw -= dx * MOVEMENT_SETTINGS.rotationSpeed;
+      pitch = clampPitch(pitch - dy * MOVEMENT_SETTINGS.rotationSpeed);
     }
 
     function pointerToNdc(event) {
@@ -1203,7 +1329,6 @@
       clock.getDelta();
       updateMovement();
       applyCameraRotation();
-      statusEl.textContent = `X ${camera.position.x.toFixed(1)} / Z ${camera.position.z.toFixed(1)}`;
       renderer.render(scene, camera);
     }
 
@@ -1215,7 +1340,9 @@
     }
 
     function bindEvents() {
+      syncMovementControls();
       updateJoystickVisibility();
+      toggleSettings(false);
 
       window.addEventListener("resize", onResize);
       window.addEventListener("keydown", (event) => {
@@ -1238,6 +1365,25 @@
       joystickEl.addEventListener("pointerup", onJoystickPointerUp);
       joystickEl.addEventListener("pointercancel", onJoystickPointerUp);
 
+      settingsToggleEl.addEventListener("click", () => {
+        toggleSettings();
+      });
+
+      walkSpeedInputEl.addEventListener("input", (event) => {
+        MOVEMENT_SETTINGS.walkSpeed = Number(event.target.value);
+        syncMovementControls();
+      });
+
+      rotationSpeedInputEl.addEventListener("input", (event) => {
+        MOVEMENT_SETTINGS.rotationSpeed = Number(event.target.value);
+        syncMovementControls();
+      });
+
+      joystickSensitivityInputEl.addEventListener("input", (event) => {
+        MOVEMENT_SETTINGS.joystickSensitivity = Number(event.target.value);
+        syncMovementControls();
+      });
+
       overlayCloseEl.addEventListener("click", closeOverlay);
       overlayEl.addEventListener("click", (event) => {
         if (event.target.hasAttribute("data-close-overlay")) {
@@ -1256,7 +1402,6 @@
 
     init().catch((error) => {
       console.error(error);
-      statusEl.textContent = "Failed to initialize gallery";
     });
   </script>
 </body>
