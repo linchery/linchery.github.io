@@ -124,7 +124,7 @@ function renderNoteCard(note) {
     imageHtml = `
       <figure class="note-image note-single">
         <div class="note-single-frame">
-          <img src="${escapeHtml(images[0])}" alt="${escapeHtml(note.title)}" />
+          <img src="${escapeHtml(images[0])}" alt="${escapeHtml(note.title)}" loading="lazy" decoding="async" />
         </div>
       </figure>
     `;
@@ -136,7 +136,7 @@ function renderNoteCard(note) {
           ${images.map((src, index) => `
             <div class="note-gallery-slide${index === 0 ? " is-active" : ""}">
               <div class="note-gallery-frame">
-                <img src="${escapeHtml(src)}" alt="${escapeHtml(note.title)} ${index + 1}" />
+                <img src="${escapeHtml(src)}" alt="${escapeHtml(note.title)} ${index + 1}" loading="lazy" decoding="async" />
               </div>
             </div>
           `).join("")}
@@ -160,7 +160,7 @@ function renderNoteCard(note) {
     <article class="note-entry">
       <header class="note-entry-header">
         <div class="note-avatar">
-          <img src="${escapeHtml(note.avatar || "assets/img/profile/prof_img.webp")}" alt="Profile image" />
+          <img src="${escapeHtml(note.avatar || "assets/img/profile/prof_img.webp")}" alt="Profile image" loading="lazy" decoding="async" />
         </div>
         <div class="note-meta">
           <p class="note-date">${escapeHtml(note.date)}</p>

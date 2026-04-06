@@ -4,8 +4,8 @@ const SITE_CONFIG = {
   affiliationHtml:
     'Graduate School of Engineering<br>Nagoya University<br/><a href="http://www.ucl.nuee.nagoya-u.ac.jp">Nobuo Kawaguchi Lab.</a>',
   profileImages: {
-    sp: "./assets/img/profile/profile.jpg",
-    pc: "./assets/img/profile/profile_wide.jpg",
+    sp: "./assets/img/profile/hero_img.webp",
+    pc: "./assets/img/profile/hero_img_wide.webp",
   },
   navItems: [
     { key: "home", href: "index.html", label: "HOME" },
@@ -113,6 +113,10 @@ function renderHeader(pageKey, pageTitle) {
     `;
   }
 
+  const heroImage = window.matchMedia("(min-width: 1024px)").matches
+    ? SITE_CONFIG.profileImages.pc
+    : SITE_CONFIG.profileImages.sp;
+
   return `
     <header class="header">
       <div class="header_top">
@@ -121,8 +125,7 @@ function renderHeader(pageKey, pageTitle) {
           <span>${SITE_CONFIG.affiliationHtml}</span>
         </h1>
         <div class="mainimg">
-          <span style="background-image: url(${SITE_CONFIG.profileImages.sp});" class="sp"></span>
-          <span style="background-image: url(${SITE_CONFIG.profileImages.pc});" class="pc"></span>
+          <span class="hero-image" style="background-image: url(${heroImage});"></span>
         </div>
       </div>
     </header>
