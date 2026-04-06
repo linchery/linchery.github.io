@@ -556,6 +556,16 @@
       rotationSpeed: 0.003,
       joystickSensitivity: 0.55,
     };
+    const PORTAL_CONFIG = {
+      targetHref: "gallery.html",
+      label: "PORTRAIT ROOM",
+      subtitle: "Click to enter",
+      base: "#24170e",
+      accent: "#5b4330",
+      frame: "#ceb072",
+      line: "#7d6552",
+      text: "#fff7ef",
+    };
 
     const DEFAULT_WALL_PLACEMENTS = [
       { wx: -6, wz: -15.87, wy: 2.2, angle: 0 },
@@ -619,6 +629,8 @@
     const pointer = new THREE.Vector2();
     const keys = Object.create(null);
     const photoMeshes = [];
+    const portalMeshes = [];
+    let portalOrb = null;
 
     let yaw = 0;
     let pitch = 0;
@@ -845,6 +857,68 @@
       };
     }
 
+    function createPortalPreviewTexture(config) {
+      const c = document.createElement("canvas");
+      c.width = 1024;
+      c.height = 512;
+      const ctx = c.getContext("2d");
+
+      const bg = ctx.createLinearGradient(0, 0, c.width, c.height);
+      bg.addColorStop(0, config.base);
+      bg.addColorStop(1, "#100a06");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, c.width, c.height);
+
+      ctx.fillStyle = "rgba(255,255,255,0.03)";
+      for (let x = 0; x <= c.width; x += 52) {
+        ctx.fillRect(x, 0, 1, c.height);
+      }
+      for (let y = 0; y <= c.height; y += 28) {
+        ctx.fillRect(0, y, c.width, 1);
+      }
+
+      const frames = [
+        { x: 138, y: 170, w: 112, h: 156 },
+        { x: 388, y: 170, w: 112, h: 156 },
+        { x: 642, y: 170, w: 112, h: 156 },
+      ];
+      frames.forEach((frame, index) => {
+        ctx.fillStyle = "rgba(0,0,0,0.28)";
+        ctx.fillRect(frame.x - 12, frame.y + 12, frame.w, frame.h);
+        ctx.fillStyle = config.frame;
+        ctx.fillRect(frame.x, frame.y, frame.w, frame.h);
+        ctx.fillStyle = index === 1 ? "#dceaf3" : "#efe2ea";
+        ctx.fillRect(frame.x + 14, frame.y + 14, frame.w - 28, frame.h - 28);
+      });
+
+      ctx.strokeStyle = "#d42a2a";
+      ctx.lineWidth = 6;
+      ctx.lineCap = "round";
+      const ropeXs = [384, 478, 572, 666];
+      ropeXs.forEach((x, index) => {
+        ctx.fillStyle = "#8b8b8b";
+        ctx.fillRect(x - 4, 310, 8, 56);
+        if (index < ropeXs.length - 1) {
+          const nextX = ropeXs[index + 1];
+          ctx.beginPath();
+          ctx.moveTo(x, 320);
+          ctx.bezierCurveTo((x + nextX) / 2 - 16, 340, (x + nextX) / 2 + 16, 340, nextX, 320);
+          ctx.stroke();
+        }
+      });
+
+      ctx.fillStyle = config.text;
+      ctx.font = 'bold 54px "Noto Serif JP", serif';
+      ctx.textAlign = "center";
+      ctx.fillText(config.label, c.width / 2, 94);
+      ctx.font = '28px "Noto Sans JP", sans-serif';
+      ctx.fillText(config.subtitle, c.width / 2, 132);
+
+      const texture = new THREE.CanvasTexture(c);
+      texture.encoding = THREE.sRGBEncoding;
+      return texture;
+    }
+
     function loadArtworkTexture(photo, index) {
       if (!photo.src) {
         return Promise.resolve(createGeneratedArtworkTexture(photo, index));
@@ -1037,6 +1111,87 @@
     function addLights() {
       scene.add(new THREE.AmbientLight(0xffffff, 1.08));
       scene.add(new THREE.HemisphereLight(0xffffff, 0xd9dfe4, 0.18));
+    }
+
+    function buildPortal() {
+      const portalGroup = new THREE.Group();
+      const previewTexture = createPortalPreviewTexture(PORTAL_CONFIG);
+
+      const orb = new THREE.Mesh(
+        new THREE.SphereGeometry(1.25, 48, 48),
+        new THREE.MeshStandardMaterial({
+          map: previewTexture,
+          color: 0xffffff,
+          roughness: 0.12,
+          metalness: 0.05,
+          transparent: true,
+          opacity: 0.95,
+          emissive: 0x0f0b08,
+          emissiveIntensity: 0.08,
+        })
+      );
+      orb.castShadow = true;
+      orb.receiveShadow = true;
+      portalGroup.add(orb);
+      portalOrb = orb;
+
+      const halo = new THREE.Mesh(
+        new THREE.SphereGeometry(1.38, 40, 40),
+        new THREE.MeshBasicMaterial({
+          color: 0xf7efe6,
+          transparent: true,
+          opacity: 0.14,
+          side: THREE.BackSide,
+        })
+      );
+      portalGroup.add(halo);
+
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(1.42, 0.055, 18, 64),
+        new THREE.MeshStandardMaterial({
+          color: 0xe2d3bc,
+          roughness: 0.34,
+          metalness: 0.16,
+        })
+      );
+      ring.rotation.y = Math.PI / 2;
+      portalGroup.add(ring);
+
+      const labelCanvas = document.createElement("canvas");
+      labelCanvas.width = 720;
+      labelCanvas.height = 120;
+      const labelCtx = labelCanvas.getContext("2d");
+      labelCtx.fillStyle = "#f5f1e8";
+      labelCtx.fillRect(0, 0, labelCanvas.width, labelCanvas.height);
+      labelCtx.fillStyle = "#675d55";
+      labelCtx.font = 'bold 26px "Noto Serif JP", serif';
+      labelCtx.textAlign = "center";
+      labelCtx.fillText(PORTAL_CONFIG.label, labelCanvas.width / 2, 48);
+      labelCtx.font = '18px "Noto Sans JP", sans-serif';
+      labelCtx.fillText("Click the sphere to move between rooms", labelCanvas.width / 2, 84);
+
+      const labelMesh = new THREE.Mesh(
+        new THREE.PlaneGeometry(2.8, 0.46),
+        new THREE.MeshStandardMaterial({
+          map: new THREE.CanvasTexture(labelCanvas),
+          roughness: 0.92,
+          metalness: 0.02,
+          transparent: true,
+        })
+      );
+      labelMesh.position.set(0, -1.8, 0);
+      portalGroup.add(labelMesh);
+
+      const hitArea = new THREE.Mesh(
+        new THREE.SphereGeometry(1.52, 24, 24),
+        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 })
+      );
+      hitArea.userData.portalTarget = PORTAL_CONFIG.targetHref;
+      portalGroup.add(hitArea);
+      portalMeshes.push(hitArea);
+
+      portalGroup.position.set(0, 1.9, 0);
+      scene.add(portalGroup);
     }
 
     // ============================================================
@@ -1380,6 +1535,11 @@
         const hits = raycaster.intersectObjects(photoMeshes, false);
         if (hits.length > 0) {
           openOverlay(hits[0].object.userData.photoData);
+          return;
+        }
+        const portalHits = raycaster.intersectObjects(portalMeshes, false);
+        if (portalHits.length > 0) {
+          window.location.href = portalHits[0].object.userData.portalTarget;
         }
       }
     }
@@ -1415,6 +1575,9 @@
       clock.getDelta();
       updateMovement();
       applyCameraRotation();
+      if (portalOrb) {
+        portalOrb.rotation.y += 0.004;
+      }
       renderer.render(scene, camera);
     }
 
@@ -1482,6 +1645,7 @@
       await loadGalleryData();
       buildRoom();
       addLights();
+      buildPortal();
       bindEvents();
       await buildArtworks();
       animate();

@@ -556,6 +556,16 @@
       rotationSpeed: 0.003,
       joystickSensitivity: 0.55,
     };
+    const PORTAL_CONFIG = {
+      targetHref: "gallery-landscape.html",
+      label: "LANDSCAPE ROOM",
+      subtitle: "Click to enter",
+      base: "#e7ecef",
+      accent: "#c4d6e3",
+      frame: "#f6f1e7",
+      line: "#c3d2dd",
+      text: "#4f6170",
+    };
 
     const DEFAULT_WALL_PLACEMENTS = [
       { wx: -6, wz: -15.87, wy: 2.2, angle: 0 },
@@ -619,6 +629,8 @@
     const pointer = new THREE.Vector2();
     const keys = Object.create(null);
     const photoMeshes = [];
+    const portalMeshes = [];
+    let portalOrb = null;
 
     let yaw = 0;
     let pitch = 0;
@@ -835,6 +847,77 @@
         aspectRatio: c.width / c.height,
         src: c.toDataURL("image/png"),
       };
+    }
+
+    function createPortalPreviewTexture(config) {
+      const c = document.createElement("canvas");
+      c.width = 1024;
+      c.height = 512;
+      const ctx = c.getContext("2d");
+
+      const bg = ctx.createLinearGradient(0, 0, c.width, c.height);
+      bg.addColorStop(0, config.base);
+      bg.addColorStop(1, "#f8fafb");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, c.width, c.height);
+
+      ctx.fillStyle = config.line;
+      ctx.fillRect(0, 390, c.width, 2);
+      ctx.fillStyle = "rgba(190, 210, 224, 0.35)";
+      for (let x = 0; x <= c.width; x += 48) {
+        ctx.fillRect(x, 392, 1, 120);
+      }
+      for (let y = 392; y <= c.height; y += 28) {
+        ctx.fillRect(0, y, c.width, 1);
+      }
+
+      const frames = [
+        { x: 148, y: 170, w: 120, h: 154 },
+        { x: 378, y: 188, w: 98, h: 120 },
+        { x: 566, y: 176, w: 130, h: 144 },
+        { x: 764, y: 188, w: 98, h: 120 },
+      ];
+      frames.forEach((frame, index) => {
+        ctx.fillStyle = "rgba(120, 138, 152, 0.14)";
+        ctx.fillRect(frame.x - 10, frame.y + 10, frame.w, frame.h);
+        ctx.fillStyle = config.frame;
+        ctx.fillRect(frame.x, frame.y, frame.w, frame.h);
+        ctx.strokeStyle = "rgba(233, 224, 193, 0.95)";
+        ctx.lineWidth = 10;
+        ctx.strokeRect(frame.x + 5, frame.y + 5, frame.w - 10, frame.h - 10);
+        const art = ctx.createLinearGradient(frame.x, frame.y, frame.x + frame.w, frame.y + frame.h);
+        art.addColorStop(0, index % 2 === 0 ? "#d9edf5" : "#efe4f4");
+        art.addColorStop(1, index % 2 === 0 ? "#f7fafc" : "#fbf7fc");
+        ctx.fillStyle = art;
+        ctx.fillRect(frame.x + 18, frame.y + 18, frame.w - 36, frame.h - 36);
+      });
+
+      ctx.strokeStyle = "#d32a2a";
+      ctx.lineWidth = 6;
+      ctx.lineCap = "round";
+      const ropeXs = [386, 472, 558, 644];
+      ropeXs.forEach((x, index) => {
+        ctx.fillStyle = "#717171";
+        ctx.fillRect(x - 3, 294, 6, 52);
+        if (index < ropeXs.length - 1) {
+          const nextX = ropeXs[index + 1];
+          ctx.beginPath();
+          ctx.moveTo(x, 306);
+          ctx.bezierCurveTo((x + nextX) / 2 - 18, 326, (x + nextX) / 2 + 18, 326, nextX, 306);
+          ctx.stroke();
+        }
+      });
+
+      ctx.fillStyle = config.text;
+      ctx.font = 'bold 54px "Noto Serif JP", serif';
+      ctx.textAlign = "center";
+      ctx.fillText(config.label, c.width / 2, 90);
+      ctx.font = '28px "Noto Sans JP", sans-serif';
+      ctx.fillText(config.subtitle, c.width / 2, 128);
+
+      const texture = new THREE.CanvasTexture(c);
+      texture.encoding = THREE.sRGBEncoding;
+      return texture;
     }
 
     function loadArtworkTexture(photo, index) {
@@ -1059,6 +1142,93 @@
         fixture.position.set(x, ROOM_H - 0.1, z);
         scene.add(fixture);
       });
+    }
+
+    function buildPortal() {
+      const portalGroup = new THREE.Group();
+      const previewTexture = createPortalPreviewTexture(PORTAL_CONFIG);
+
+      const orb = new THREE.Mesh(
+        new THREE.SphereGeometry(1.25, 48, 48),
+        new THREE.MeshStandardMaterial({
+          map: previewTexture,
+          color: 0xffffff,
+          roughness: 0.14,
+          metalness: 0.06,
+          transparent: true,
+          opacity: 0.96,
+          emissive: 0x151515,
+          emissiveIntensity: 0.08,
+        })
+      );
+      orb.castShadow = true;
+      orb.receiveShadow = true;
+      portalGroup.add(orb);
+      portalOrb = orb;
+
+      const halo = new THREE.Mesh(
+        new THREE.SphereGeometry(1.38, 40, 40),
+        new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0.08,
+          side: THREE.BackSide,
+        })
+      );
+      portalGroup.add(halo);
+
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(1.42, 0.055, 18, 64),
+        new THREE.MeshStandardMaterial({
+          color: 0xe8dbc6,
+          roughness: 0.38,
+          metalness: 0.18,
+          emissive: 0x6a5c44,
+          emissiveIntensity: 0.1,
+        })
+      );
+      ring.rotation.y = Math.PI / 2;
+      portalGroup.add(ring);
+
+      const labelCanvas = document.createElement("canvas");
+      labelCanvas.width = 720;
+      labelCanvas.height = 120;
+      const labelCtx = labelCanvas.getContext("2d");
+      labelCtx.fillStyle = "#f4f1ea";
+      labelCtx.fillRect(0, 0, labelCanvas.width, labelCanvas.height);
+      labelCtx.fillStyle = "#7a746d";
+      labelCtx.font = 'bold 26px "Noto Serif JP", serif';
+      labelCtx.textAlign = "center";
+      labelCtx.fillText(PORTAL_CONFIG.label, labelCanvas.width / 2, 48);
+      labelCtx.font = '18px "Noto Sans JP", sans-serif';
+      labelCtx.fillText("Click the sphere to move between rooms", labelCanvas.width / 2, 84);
+
+      const labelMesh = new THREE.Mesh(
+        new THREE.PlaneGeometry(2.8, 0.46),
+        new THREE.MeshStandardMaterial({
+          map: new THREE.CanvasTexture(labelCanvas),
+          roughness: 0.92,
+          metalness: 0.02,
+          transparent: true,
+        })
+      );
+      labelMesh.position.set(0, -1.8, 0);
+      portalGroup.add(labelMesh);
+
+      const hitArea = new THREE.Mesh(
+        new THREE.SphereGeometry(1.52, 24, 24),
+        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 })
+      );
+      hitArea.userData.portalTarget = PORTAL_CONFIG.targetHref;
+      portalGroup.add(hitArea);
+      portalMeshes.push(hitArea);
+
+      const glow = new THREE.PointLight(0xf6e5cf, 0.75, 8);
+      glow.position.set(0, 0.15, 0.55);
+      portalGroup.add(glow);
+
+      portalGroup.position.set(0, 1.9, 0);
+      scene.add(portalGroup);
     }
 
     // ============================================================
@@ -1409,6 +1579,11 @@
         const hits = raycaster.intersectObjects(photoMeshes, false);
         if (hits.length > 0) {
           openOverlay(hits[0].object.userData.photoData);
+          return;
+        }
+        const portalHits = raycaster.intersectObjects(portalMeshes, false);
+        if (portalHits.length > 0) {
+          window.location.href = portalHits[0].object.userData.portalTarget;
         }
       }
     }
@@ -1444,6 +1619,9 @@
       clock.getDelta();
       updateMovement();
       applyCameraRotation();
+      if (portalOrb) {
+        portalOrb.rotation.y += 0.004;
+      }
       renderer.render(scene, camera);
     }
 
@@ -1511,6 +1689,7 @@
       await loadGalleryData();
       buildRoom();
       addLights();
+      buildPortal();
       bindEvents();
       await buildArtworks();
       animate();
