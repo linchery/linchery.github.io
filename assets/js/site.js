@@ -51,6 +51,7 @@ const SITE_CONFIG = {
     address:
       "〒464-8603<br>愛知県名古屋市千種区不老町<br>名古屋大学 IB電子情報館 北棟9F 905号室",
     email: "linda[at]ucl.nuee.nagoya-u.ac.jp",
+    copyright: "&copy; 2022 Nozomi Hayashida",
   },
 };
 
@@ -164,6 +165,7 @@ function renderFooter(pageKey) {
             <p>${SITE_CONFIG.footer.email}</p>
           </section>
         </div>
+        <p class="footer-copyright">${SITE_CONFIG.footer.copyright}</p>
       </div>
     </footer>
   `;
