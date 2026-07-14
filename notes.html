@@ -22,6 +22,8 @@
     }
 
     .note-entry {
+      --note-avatar-size: 92px;
+      --note-body-gutter: var(--note-avatar-size);
       border: 1px solid #e4d9cd;
       padding: 1.5rem 1.5rem 2rem;
       background: #fffdfa;
@@ -72,7 +74,10 @@
     }
 
     .note-body {
-      max-width: 640px;
+      max-width: calc(640px + (var(--note-body-gutter) * 2));
+      margin: 0 auto;
+      padding-inline: min(var(--note-body-gutter), 10vw);
+      box-sizing: border-box;
       color: #292522;
       font-size: 1rem;
       line-height: 2;
@@ -301,6 +306,7 @@
       }
 
       .note-entry {
+        --note-avatar-size: 68px;
         padding: 1rem 1rem 1.4rem;
       }
 
